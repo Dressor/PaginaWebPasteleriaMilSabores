@@ -11,7 +11,7 @@ function Productos() {
   const [categoria, setCategoria] = useState('');
   const [busqueda, setBusqueda] = useState('');
 
-  // Filtrado
+ 
   const listaFiltrada = productos.filter(p => {
     const matchCategoria = categoria ? p.categoria === categoria : true;
     const matchBusqueda = busqueda ? p.nombre.toLowerCase().includes(busqueda.toLowerCase()) : true;
