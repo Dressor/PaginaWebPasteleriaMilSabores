@@ -1,0 +1,71 @@
+/* Paleta de colores y fuentes */
+:root {
+  --cream: #FFF5E1;
+  --rose: #FFC0CB;
+  --rose-600: #ff9fb3;
+  --choco: #8B4513;
+  --choco-700: #6e3610;
+  --text-main: #5D4037;
+  --text-secondary: #B0BEC5;
+}
+
+/* Fondo y texto principal */
+body, .bg-cream {
+  background-color: var(--cream) !important;
+  color: var(--text-main);
+  font-family: 'Lato', system-ui, Arial, sans-serif;
+}
+
+/* Header */
+.bg-rose-subtle {
+  background-color: #ffe4ea !important;
+}
+
+.brand-font {
+  font-family: 'Pacifico', cursive;
+}
+
+.text-choco {
+  color: var(--choco) !important;
+}
+
+/* Card estilos */
+.card-title {
+  color: var(--text-main);
+}
+
+.card-text {
+  color: var(--text-secondary);
+}
+
+/* Botones personalizados */
+.btn-choco {
+  background-color: var(--choco);
+  color: #fff;
+  border-color: var(--choco);
+}
+
+.btn-choco:hover {
+  background-color: var(--choco-700);
+  border-color: var(--choco-700);
+}
+
+/* Imágenes en cards y header */
+.img-fluid {
+  max-width: 100%;
+  height: auto;
+  border-radius: 8px;
+}
+
+/* Responsive ratio para imagen principal */
+.ratio {
+  background: #fff5e1;
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+/* Espaciado en el main */
+main {
+  padding-top: 3rem;
+  padding-bottom: 3rem;
+}
