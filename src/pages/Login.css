@@ -1,0 +1,16 @@
+/* src/pages/Login.css */
+body {
+  font-family: 'Poppins', sans-serif;
+}
+
+a {
+  color: #a0522d;
+}
+
+a:hover {
+  color: #6b2d14;
+}
+h2 {
+  color: #a0522d;
+  margin-bottom: 20px;
+}
