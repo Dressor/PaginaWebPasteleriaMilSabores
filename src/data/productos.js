@@ -1,3 +1,8 @@
+import pastelChocolate from '../assets/img/pastelChocolate.png';
+import pastelTresLeches from '../assets/img/pastelTresLeches.png';
+import tortaVegana from '../assets/img/tortaVegana.png';
+import tortaVainilla from '../assets/img/tortaVainilla.png';
+
 const productos = [
   {
     codigo: 'choco',
@@ -6,16 +11,16 @@ const productos = [
     descripcion: 'Deliciosa torta artesanal de chocolate.',
     stock: 12,
     precio: 15900,
-    imagen: '/img/pastelChocolate.png',
+    imagen: pastelChocolate,
   },
   {
-    codigo: 'limon',
-    nombre: 'Pie de Limón',
-    categoria: 'Pies',
-    descripcion: 'Fresco pie de limón con merengue.',
+    codigo: 'tresLeches',
+    nombre: 'Torta Tres Leches',
+    categoria: 'Tortas',
+    descripcion: 'Humeda torta de tres leches.',
     stock: 8,
     precio: 12900,
-    imagen: '/img/pastelTresLeches.png',
+    imagen: pastelTresLeches,
   },
   {
     codigo: 'tvegana',
@@ -24,7 +29,7 @@ const productos = [
     descripcion: 'Rica torta sin origen animal.',
     stock: 2,
     precio: 18900,
-    imagen: '/img/tortaVegana.png',
+    imagen: tortaVegana,
   },
   {
     codigo: 'vainilla',
@@ -33,7 +38,7 @@ const productos = [
     descripcion: 'Rica torta de Vainilla. ',
     stock: 4,
     precio: 14900,
-    imagen: '/img/tortaVainilla.png',
+    imagen: tortaVainilla,
   },
  
 ];
