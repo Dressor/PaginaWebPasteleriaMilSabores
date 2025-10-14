@@ -13,8 +13,8 @@ const agruparProductos = (arr, size) => {
   return chunkedArr;
 };
 
-// Dividimos los productos en grupos de 3
-const productosEnGrupos = agruparProductos(productos, 3);
+const productosDestacados = productos.slice(0, 9);
+const productosEnGrupos = agruparProductos(productosDestacados, 3);
 
 function Home() {
   return (
