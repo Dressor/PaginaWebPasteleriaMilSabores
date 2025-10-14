@@ -1,9 +1,20 @@
 import React from 'react';
 import './Home.css'; 
 import 'bootstrap/dist/css/bootstrap.min.css';
-import productos from '../data/productos';
+import productos from '../data/productos'; 
+import fotoTienda from '../assets/img/fotoTienda.png';
+import { Container, Carousel, Row, Col, Card, Button } from 'react-bootstrap';
 
+const agruparProductos = (arr, size) => {
+  const chunkedArr = [];
+  for (let i = 0; i < arr.length; i += size) {
+    chunkedArr.push(arr.slice(i, i + size));
+  }
+  return chunkedArr;
+};
 
+// Dividimos los productos en grupos de 3
+const productosEnGrupos = agruparProductos(productos, 3);
 
 function Home() {
   return (
@@ -19,34 +30,39 @@ function Home() {
             </div>
             <div className="col-12 col-md-6">
               <div className="ratio ratio-16x9 rounded shadow-sm bg-light d-flex align-items-center justify-content-center">
-                <img src="/img/fotoTienda.png" alt="Imagen de la tienda" className="img-fluid rounded" style={{maxHeight: '100%', maxWidth: '100%', objectFit: 'cover'}} />
+                <img src={fotoTienda} alt="Imagen de la tienda" loading="lazy" className="img-fluid rounded" style={{maxHeight: '100%', maxWidth: '100%', objectFit: 'cover'}} />
               </div>
             </div>
           </div>
         </div>
       </header>
 
-      <main className="py-5">
-        <div className="container">
-          <h2 className="mb-4 brand-font text-choco">Productos destacados</h2>
-          <div className="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-4">
-            {productos.map(producto => (
-              <div className="col" key={producto.codigo}>
-                <div className="card h-100">
-                  <img src={producto.imagen} className="card-img-top" alt={producto.nombre} />
-                  <div className="card-body">
-                    <h5 className="card-title">{producto.nombre}</h5>
-                    <p className="card-text">{producto.descripcion}</p>
-                    <button className="btn btn-choco">Agregar al carrito</button>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </main>
+    <main className="py-5">
+        <Container> 
+            <h2 className="mb-4 brand-font text-choco">Productos destacados</h2>
+            <Carousel>
+                {productosEnGrupos.map((grupo, index) => (
+                    <Carousel.Item key={index}>
+                        <Row className="g-4 p-5"> 
+                            {grupo.map(producto => (
+                                <Col md={4} key={producto.codigo}> 
+                                    <Card className="h-100 shadow-sm">
+                                        <Card.Img variant="top" src={producto.imagen} alt={producto.nombre} style={{height: '200px', objectFit: 'cover'}}/>
+                                        <Card.Body>
+                                            <Card.Title>{producto.nombre}</Card.Title>
+                                            <Card.Text>{producto.descripcion}</Card.Text>
+                                            <Button className="btn-choco">Agregar al carrito</Button>
+                                        </Card.Body>
+                                    </Card>
+                                </Col>
+                            ))}
+                        </Row>
+                    </Carousel.Item>
+                ))}
+            </Carousel>
+        </Container>
+    </main>
     </>
-  );
-}
-
+  )
+};
 export default Home;

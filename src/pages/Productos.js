@@ -101,7 +101,7 @@ function Productos() {
                     <strong>${producto.precio.toLocaleString('es-CL')}</strong>
                     <div className="btn-group">
                       <a href={`/producto/${producto.codigo}`} className="btn btn-outline-choco">Ver</a>
-                      <button className="btn btn-rose">Añadir</button>
+                        <button type="button" class="btn btn-light">Agregar</button>
                     </div>
                   </div>
                 </div>

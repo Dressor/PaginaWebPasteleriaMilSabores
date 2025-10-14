@@ -65,8 +65,8 @@
 }
 
 .LogoPasteleria {
-  width: 100px;
-  height: 100px;
+  width: 50px;
+  height: 50px;
   object-fit: cover;
   border-radius: 50%;
   border: 3px solid white;
@@ -339,7 +339,67 @@ footer {
 .pastel-navbar .nav-link:hover {
   color: #8B4513 !important;
   /* Hover chocolate */
-  text-decoration: underline;
+  text-decoration: none;
+  transform: translateY(-3px) scale(1.06);
+  /* ligero levantamiento y ampliación */
+  box-shadow: 0 6px 18px rgba(0,0,0,0.08), 0 2px 0 rgba(139,69,19,0.06);
+}
+
+/* Efecto cuando el enlace recibe foco (teclado) */
+.pastel-navbar .nav-link:focus-visible {
+  outline: 3px solid rgba(255,192,203,0.35);
+  outline-offset: 4px;
+  border-radius: 6px;
+}
+
+/* Transición suave para transform y sombra */
+.pastel-navbar .nav-link {
+  transition: transform 180ms ease, box-shadow 180ms ease, color 180ms ease;
+}
+
+/* Estilo para la opción activa */
+.pastel-navbar .nav-link.active {
+  color: #8B4513 !important;
+  font-weight: 700;
+  position: relative;
+}
+
+/* Línea inferior decorativa para el item activo */
+.pastel-navbar .nav-link.active::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%) scaleX(0);
+  bottom: -6px;
+  width: 50%;
+  height: 4px;
+  background: linear-gradient(90deg, rgba(255,192,203,1), rgba(139,69,19,1));
+  border-radius: 4px;
+  transform-origin: center;
+  transition: transform 260ms cubic-bezier(.2,.9,.2,1);
+}
+
+/* Cuando el item está activo, expandir la línea decorativa */
+.pastel-navbar .nav-link.active::after {
+  transform: translateX(-50%) scaleX(1);
+}
+
+/* Micro-animación al hacer click (touch / active) */
+.pastel-navbar .nav-link:active {
+  transform: scale(0.98);
+}
+
+/* Reducir el efecto en pantallas pequeñas para evitar overflow */
+@media (max-width: 576px) {
+  .pastel-navbar .nav-link:hover {
+    transform: translateY(0) scale(1.03);
+    box-shadow: none;
+  }
+  .pastel-navbar .nav-link.active::after {
+    bottom: -4px;
+    height: 3px;
+    width: 60%;
+  }
 }
 
 .pastel-navbar .dropdown-menu {
@@ -370,11 +430,64 @@ footer {
 }
 
 .logo {
-  width: 60px;
-  height: 60px;
-  border-radius: 50%;
+  width: 5px;
+  height: 10px;
+  border-radius: 10%;
   border: 2px solid #FFC0CB;
   object-fit: cover;
+}
+
+/* Logo pequeño para navbar */
+.navbar .logo {
+  width: 25px;
+  height: auto;
+  border-radius: 8px;
+  border: 2px solid rgba(255,192,203,0.6);
+}
+
+/* Botones de auth separados */
+.auth-buttons {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.btn-outline-choco {
+  background: transparent;
+  border: 2px solid var(--rose);
+  color: var(--text-main);
+  padding: 0.375rem 0.75rem;
+  border-radius: 8px;
+  transition: background 180ms ease, color 180ms ease, transform 120ms ease;
+}
+
+.btn-outline-choco:hover,
+.btn-outline-choco:focus {
+  background: var(--rose-600);
+  color: #fff;
+  transform: translateY(-2px);
+}
+
+.auth-btn {
+  box-shadow: none;
+}
+
+.btn-rose {
+  background: var(--rose);
+  color: var(--text-main);
+  border: none;
+  padding: 0.375rem 0.6rem;
+  border-radius: 8px;
+}
+
+.btn-rose:hover {
+  background: var(--choco);
+  color: #FFF5E1;
+}
+
+.cart-button {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
 }
 
 .hProductos {
