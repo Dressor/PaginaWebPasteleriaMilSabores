@@ -162,3 +162,81 @@ body[data-theme='dark'] .navbar-toggler-icon { filter: invert(.85); }
 .toast.bg-success { background-color: #5a2c1e !important; }
 .toast.bg-warning { background-color: #d39e00 !important; }
 .toast.bg-danger  { background-color: #c9302c !important; }
+
+/* === Arreglo específico para los cuadros de Misión y Visión === */
+:root[data-theme='dark'] .card.bg-light,
+:root[data-bs-theme='dark'] .card.bg-light,
+body[data-theme='dark'] .card.bg-light {
+  background-color: var(--surface-1) !important;
+  color: var(--text) !important;
+  border-color: var(--border) !important;
+}
+
+/* Si usan solo bg-light sin card */
+:root[data-theme='dark'] .bg-light,
+:root[data-bs-theme='dark'] .bg-light,
+body[data-theme='dark'] .bg-light {
+  background-color: var(--surface-1) !important;
+  color: var(--text) !important;
+  border-color: var(--border) !important;
+}
+
+/* Refuerza los títulos y párrafos dentro */
+:root[data-theme='dark'] .bg-light h5,
+:root[data-bs-theme='dark'] .bg-light h5,
+body[data-theme='dark'] .bg-light h5 {
+  color: var(--section-title) !important;
+}
+
+:root[data-theme='dark'] .bg-light p,
+:root[data-bs-theme='dark'] .bg-light p,
+body[data-theme='dark'] .bg-light p {
+  color: var(--text) !important;
+}
+:root[data-theme='dark'] .bg-light,
+:root[data-bs-theme='dark'] .bg-light,
+body[data-theme='dark'] .bg-light {
+  border: 1px solid rgba(230, 184, 156, 0.35) !important;
+}
+/* ==== NOSOTROS: forzar "Misión" y "Visión" a oscuro en dark ==== */
+/* Cubrimos bg-white, variantes claras y también inline styles con "background" */
+:root[data-theme='dark'] .bg-white,
+:root[data-bs-theme='dark'] .bg-white,
+body[data-theme='dark'] .bg-white,
+:root[data-theme='dark'] .bg-light-subtle,
+:root[data-bs-theme='dark'] .bg-light-subtle,
+body[data-theme='dark'] .bg-light-subtle,
+:root[data-theme='dark'] [style*="background"],
+:root[data-bs-theme='dark'] [style*="background"],
+body[data-theme='dark'] [style*="background"] {
+  /* fondo y borde homogéneos con el resto de tarjetas */
+  background-color: var(--surface-1) !important;
+  color: var(--text) !important;
+  border: 1px solid var(--border) !important;
+  box-shadow: var(--shadow) !important;
+}
+
+/* títulos y párrafos dentro, para asegurar contraste */
+:root[data-theme='dark'] .bg-white h5,
+:root[data-bs-theme='dark'] .bg-white h5,
+body[data-theme='dark'] .bg-white h5,
+:root[data-theme='dark'] .bg-light-subtle h5,
+:root[data-bs-theme='dark'] .bg-light-subtle h5,
+body[data-theme='dark'] .bg-light-subtle h5,
+:root[data-theme='dark'] [style*="background"] h5,
+:root[data-bs-theme='dark'] [style*="background"] h5,
+body[data-theme='dark'] [style*="background"] h5 {
+  color: var(--section-title) !important;
+}
+
+:root[data-theme='dark'] .bg-white p,
+:root[data-bs-theme='dark'] .bg-white p,
+body[data-theme='dark'] .bg-white p,
+:root[data-theme='dark'] .bg-light-subtle p,
+:root[data-bs-theme='dark'] .bg-light-subtle p,
+body[data-theme='dark'] .bg-light-subtle p,
+:root[data-theme='dark'] [style*="background"] p,
+:root[data-bs-theme='dark'] [style*="background"] p,
+body[data-theme='dark'] [style*="background"] p {
+  color: var(--text) !important;
+}
