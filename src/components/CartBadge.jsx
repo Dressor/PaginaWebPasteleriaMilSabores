@@ -1,29 +1,22 @@
-// src/components/CartBadge.jsx
 import React from 'react';
+import { Link } from 'react-router-dom';
 import { useCart } from '../context/CartContext';
-import { useNavigate } from 'react-router-dom';
 
 export default function CartBadge() {
   const { count } = useCart();
-  const navigate = useNavigate();
-
   return (
-    <button
-      type="button"
-      className="btn position-relative btn-outline-secondary"
-      title="Ver carrito"
-      onClick={() => navigate('/carrito')}
-    >
-      🛒 Carrito
+    <Link to="/carrito" className="btn btn-outline-choco position-relative">
+      <i className="bi bi-cart3 me-1" />
+      Carrito
       {count > 0 && (
         <span
           className="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger"
-          aria-label={`Productos en carrito: ${count}`}
+          style={{ fontSize: '0.75rem' }}
+          aria-label={`${count} artículos en el carrito`}
         >
           {count}
-          <span className="visually-hidden">productos</span>
         </span>
       )}
-    </button>
+    </Link>
   );
 }

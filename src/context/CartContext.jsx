@@ -1,116 +1,94 @@
-// src/context/CartContext.jsx
-import React, { createContext, useContext, useEffect, useMemo, useState } from 'react';
+import React, { createContext, useContext, useEffect, useMemo, useReducer, useState } from 'react';
 
 const CartContext = createContext(null);
-const STORAGE_KEY = 'cart_v1';
+const storageKey = 'milsabores.cart.v1';
+
+// ── storage helpers
+const load = () => {
+  try { return JSON.parse(localStorage.getItem(storageKey)) || []; }
+  catch { return []; }
+};
+const save = (items) => localStorage.setItem(storageKey, JSON.stringify(items));
+
+function reducer(state, action) {
+  switch (action.type) {
+    case 'INIT':
+      return Array.isArray(action.payload) ? action.payload : [];
+    case 'ADD': {
+      const { producto, qty = 1 } = action.payload;
+      const i = state.findIndex(it => it.codigo === producto.codigo);
+      const next = [...state];
+      if (i === -1) {
+        next.push({ ...producto, qty: Math.max(1, qty) });
+      } else {
+        const stock = Number.isFinite(producto.stock) ? producto.stock : Infinity;
+        next[i] = { ...next[i], qty: Math.min(stock, next[i].qty + qty) };
+      }
+      return next;
+    }
+    case 'SET_QTY': {
+      const { codigo, qty } = action.payload;
+      if (qty <= 0) return state.filter(it => it.codigo !== codigo);
+      return state.map(it => it.codigo === codigo ? { ...it, qty } : it);
+    }
+    case 'REMOVE':
+      return state.filter(it => it.codigo !== action.payload);
+    case 'CLEAR':
+      return [];
+    default:
+      return state;
+  }
+}
 
 export function CartProvider({ children }) {
-  const [items, setItems] = useState([]);
-  const [toasts, setToasts] = useState([]);
+  const [items, dispatch] = useReducer(reducer, []);
+  // ── toasts seguros (nunca undefined)
+  const [toasts, setToasts] = useState([]); // [{id, msg, variant}]
 
-  useEffect(() => {
-    try {
-      const raw = localStorage.getItem(STORAGE_KEY);
-      if (raw) setItems(JSON.parse(raw));
-    } catch {}
-  }, []);
+  useEffect(() => { dispatch({ type: 'INIT', payload: load() }); }, []);
+  useEffect(() => { save(items); }, [items]);
 
-  useEffect(() => {
-    try {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(items));
-    } catch {}
-  }, [items]);
-
-  const pushToast = (title, msg) => {
-    const id = crypto.randomUUID?.() || String(Date.now() + Math.random());
-    setToasts((t) => [...t, { id, title, msg }]);
-  };
-  const removeToast = (id) => setToasts((t) => t.filter((x) => x.id !== id));
-
-  const addToCart = (product, qty = 1) => {
-    if (!product?.codigo) return;
-    const max = Number(product.stock) || Infinity;
-
-    setItems((prev) => {
-      const idx = prev.findIndex((p) => p.codigo === product.codigo);
-      if (idx >= 0) {
-        const current = prev[idx].qty || 0;
-        const nextQty = Math.min(current + qty, max);
-        const next = [...prev];
-        next[idx] = { ...next[idx], qty: nextQty };
-        if (nextQty === current) {
-          pushToast('Sin stock', 'Has alcanzado la cantidad máxima disponible.');
-        } else {
-          pushToast('Producto agregado', `${product.nombre} fue añadido al carrito`);
-        }
-        return next;
-      }
-      const startQty = Math.min(qty, max);
-      if (startQty <= 0) {
-        pushToast('Sin stock', 'Este producto no tiene stock disponible.');
-        return prev;
-      }
-      pushToast('Producto agregado', `${product.nombre} fue añadido al carrito`);
-      return [...prev, {
-        codigo: product.codigo,
-        nombre: product.nombre,
-        precio: product.precio,
-        imagen: product.imagen,
-        qty: startQty,
-        stock: max,
-      }];
-    });
+  const removeToast = (id) => setToasts(prev => prev.filter(t => t.id !== id));
+  const addToast = (msg, variant = 'success', ttl = 3000) => {
+    const id = `${Date.now()}-${Math.random().toString(36).slice(2)}`;
+    setToasts(prev => [...prev, { id, msg, variant }]);
+    if (ttl > 0) setTimeout(() => removeToast(id), ttl);
   };
 
-  const removeFromCart = (codigo) => {
-    setItems((prev) => prev.filter((p) => p.codigo !== codigo));
-    pushToast('Producto eliminado', 'Se quitó el producto del carrito');
-  };
-
-  const clearCart = () => {
-    setItems([]);
-    pushToast('Carrito vacío', 'Se vaciaron los productos del carrito');
+  const addToCart = (producto, qty = 1) => {
+    dispatch({ type: 'ADD', payload: { producto, qty } });
+    addToast(`Añadido: ${producto.nombre}`, 'success');
   };
 
   const setQty = (codigo, qty) => {
-    const n = Math.max(1, Number(qty) || 1);
-    setItems((prev) => prev.map((p) => {
-      if (p.codigo !== codigo) return p;
-      const max = Number(p.stock) || Infinity;
-      const toSet = Math.min(n, max);
-      if (toSet !== n) pushToast('Límite de stock', 'No puedes superar el stock disponible.');
-      return { ...p, qty: toSet };
-    }));
+    dispatch({ type: 'SET_QTY', payload: { codigo, qty: Number(qty) || 0 } });
   };
 
-  const inc = (codigo) => {
-    setItems((prev) => prev.map((p) => {
-      if (p.codigo !== codigo) return p;
-      const max = Number(p.stock) || Infinity;
-      const toSet = Math.min((p.qty || 1) + 1, max);
-      if (toSet === p.qty) pushToast('Límite de stock', 'No puedes superar el stock disponible.');
-      return { ...p, qty: toSet };
-    }));
+  const removeFromCart = (codigo) => {
+    dispatch({ type: 'REMOVE', payload: codigo });
+    addToast('Producto eliminado del carrito', 'warning');
   };
 
-  const dec = (codigo) => {
-    setItems((prev) =>
-      prev.map((p) => (p.codigo === codigo ? { ...p, qty: Math.max(1, p.qty - 1) } : p))
-    );
+  const clearCart = () => {
+    dispatch({ type: 'CLEAR' });
+    addToast('Carrito vaciado', 'warning');
   };
 
-  const count = useMemo(() => items.reduce((acc, it) => acc + (it.qty || 0), 0), [items]);
-  const total = useMemo(() => items.reduce((acc, it) => acc + it.precio * (it.qty || 0), 0), [items]);
-  const fmtCLP = (n) => n.toLocaleString('es-CL');
+  const count = useMemo(() => items.reduce((a, b) => a + b.qty, 0), [items]);
+  const subtotal = useMemo(() => items.reduce((a, b) => a + b.qty * b.precio, 0), [items]);
+  const envio = useMemo(() => (subtotal > 30000 || subtotal === 0 ? 0 : 3990), [subtotal]);
+  const total = useMemo(() => subtotal + envio, [subtotal, envio]);
 
-  const value = {
-    items, addToCart, removeFromCart, clearCart,
-    setQty, inc, dec,
-    count, total, fmtCLP,
-    toasts, removeToast,
-  };
-
-  return <CartContext.Provider value={value}>{children}</CartContext.Provider>;
+  return (
+    <CartContext.Provider value={{
+      items, addToCart, setQty, removeFromCart, clearCart,
+      count, subtotal, envio, total,
+      // toasts API
+      toasts, addToast, removeToast
+    }}>
+      {children}
+    </CartContext.Provider>
+  );
 }
 
 export const useCart = () => {

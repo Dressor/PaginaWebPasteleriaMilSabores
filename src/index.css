@@ -1,279 +1,164 @@
-/* ===============================
-   🎨 VARIABLES DE TEMA
-================================= */
-
-/* Tema claro */
+/* ===== tokens base (claro) ===== */
 :root {
-  --bg:            #fff8ee;
-  --text:          #3e2b24;
-  --muted:         #7a6a63;
-  --border:        #e9d6c8;
-  --surface-1:     #ffffff;
-  --surface-2:     #fff2e6;
-  --overlay:       rgba(0,0,0,.45);
+  --bg: #fff8ee;
+  --text: #3e2b24;
+  --muted: #7a6a63;
+  --border: #e9d6c8;
+  --surface-1: #ffffff;
+  --surface-2: #fff2e6;
+  --overlay: rgba(0,0,0,.45);
 
-  --choco:         #5a2c1e;
-  --rose:          #fddede;
-  --cream:         #fff7f0;
+  --choco: #5a2c1e;
+  --rose: #fddede;
+  --cream: #fff7f0;
 
-  --shadow:        0 4px 12px rgba(0, 0, 0, 0.06);
-  --ring:          0 0 0 3px rgba(90,44,30,.18);
+  --shadow: 0 4px 12px rgba(0,0,0,.06);
+  --ring: 0 0 0 3px rgba(90,44,30,.18);
 
-  --section-title: var(--choco);
-  --section-subtitle: color-mix(in srgb, var(--text) 70%, white);
+  /* Bootstrap (modo claro) */
+  color-scheme: light;
+  --bs-body-bg: var(--bg);
+  --bs-body-color: var(--text);
+  --bs-card-bg: var(--surface-1);
+  --bs-card-color: var(--text);
+  --bs-border-color: var(--border);
+  --bs-heading-color: var(--text);
+  --bs-link-color: var(--choco);
 }
 
-/* Tema oscuro */
+/* ===== dark: aceptamos cualquiera de estos atributos ===== */
+:root[data-theme='dark'],
+:root[data-bs-theme='dark'],
 body[data-theme='dark'] {
-  --bg:            #161314;
-  --text:          #efe4dd;
-  --muted:         #b7a9a1;
-  --border:        #3a302b;
-  --surface-1:     #211b1a;
-  --surface-2:     #2a2220;
-  --overlay:       rgba(0,0,0,.55);
+  --bg: #161314;
+  --text: #efe4dd;
+  --muted: #cbbfb9;
+  --border: #3a302b;
+  --surface-1: #211b1a;
+  --surface-2: #2a2220;
+  --overlay: rgba(0,0,0,.55);
 
-  --choco:         #d7a48a;
-  --rose:          #5a3a35;
-  --cream:         #2a2220;
+  --choco: #e6b89c;
+  --rose: #4a2f2c;
+  --cream: #1f1918;
 
-  --shadow:        0 6px 18px rgba(0,0,0,.35);
-  --ring:          0 0 0 3px rgba(215,164,138,.28);
+  --shadow: 0 6px 18px rgba(0,0,0,.4);
+  --ring: 0 0 0 3px rgba(230,184,156,.35);
 
-  --section-title: #ffe3d2;
-  --section-subtitle: #e7d3c9;
+  /* Bootstrap (modo oscuro) */
+  color-scheme: dark;
+  --bs-body-bg: var(--bg);
+  --bs-body-color: var(--text);
+  --bs-card-bg: var(--surface-1);
+  --bs-card-color: var(--text);
+  --bs-border-color: var(--border);
+  --bs-heading-color: var(--text);
+  --bs-link-color: var(--choco);
 }
 
-/* ===============================
-   🧱 BASE GENERAL
-================================= */
-html, body {
-  height: 100%;
-  margin: 0;
-}
-
+/* ===== base ===== */
+html, body { height: 100%; }
 body {
-  background-color: var(--bg);
-  color: var(--text);
+  background-color: var(--bg) !important;
+  color: var(--text) !important;
   font-family: 'Lato', sans-serif;
 }
+* { transition: background-color .25s, color .25s, border-color .25s; }
 
-/* Transiciones suaves */
-* {
-  transition: background-color .25s ease, color .25s ease, border-color .25s ease;
-}
-
-/* Tipografía de marca */
+/* tipografía marca */
 .brand-font { font-family: 'Pacifico', cursive; }
 .text-choco { color: var(--choco) !important; }
 
-/* ===============================
-   🧩 CONTENEDORES Y ELEMENTOS
-================================= */
-.navbar, .card, .form-control, .btn, .hero-nosotros, .accordion-item {
+/* superficies */
+.navbar, .card, .form-control, .btn, .accordion-item {
   border-radius: .75rem !important;
   box-shadow: var(--shadow);
-  background-color: var(--surface-1);
-  color: var(--text);
-  border: 1px solid var(--border);
+  background-color: var(--surface-1) !important;
+  color: var(--text) !important;
+  border: 1px solid var(--border) !important;
 }
 
-/* ===============================
-   💫 SECCIONES Y HERO
-================================= */
+/* header de sección / hero */
 .bg-rose-subtle, .section-header {
-  background: linear-gradient(180deg, var(--rose), var(--cream));
-  border: 1px solid var(--border);
-  box-shadow: var(--shadow);
-  position: relative;
-  overflow: hidden;
+  background: linear-gradient(180deg, var(--rose), var(--cream)) !important;
+  border: 1px solid var(--border) !important;
+  box-shadow: var(--shadow) !important;
 }
-
+:root[data-theme='dark'] .bg-rose-subtle,
+:root[data-bs-theme='dark'] .bg-rose-subtle,
 body[data-theme='dark'] .bg-rose-subtle,
+:root[data-theme='dark'] .section-header,
+:root[data-bs-theme='dark'] .section-header,
 body[data-theme='dark'] .section-header {
-  background: linear-gradient(180deg, #3a2926, #241d1b);
+  background: linear-gradient(180deg, #2b2321, #1c1716) !important;
 }
 
-/* Textos del header */
+/* contraste de títulos/subtítulos en headers */
+:root { --section-title: var(--choco); --section-subtitle: color-mix(in srgb, var(--text) 70%, white); }
+:root[data-theme='dark'],
+:root[data-bs-theme='dark'],
+body[data-theme='dark'] {
+  --section-title: #ffe9d7;
+  --section-subtitle: #e3d0c5;
+}
 .section-header h1,
 .section-header .brand-font,
 .bg-rose-subtle h1,
-.bg-rose-subtle .brand-font {
-  color: var(--section-title) !important;
-}
-
+.bg-rose-subtle .brand-font { color: var(--section-title) !important; }
 .section-header p,
 .section-header .text-muted,
 .bg-rose-subtle p,
-.bg-rose-subtle .text-muted {
-  color: var(--section-subtitle) !important;
-}
+.bg-rose-subtle .text-muted { color: var(--section-subtitle) !important; }
 
-/* Brillo en modo oscuro */
-body[data-theme='dark'] .section-header h1,
-body[data-theme='dark'] .bg-rose-subtle h1 {
-  text-shadow: 0 1px 0 rgba(0,0,0,.25);
-}
-
-/* ===============================
-   🔘 BOTONES
-================================= */
-.btn-choco {
-  background-color: var(--choco);
-  color: #fff !important;
-  border: none;
-}
-.btn-choco:hover { filter: brightness(.92); }
-
-.btn-outline-choco {
-  border: 1px solid var(--choco);
-  color: var(--choco);
-  background: transparent;
-}
-.btn-outline-choco:hover {
-  background: var(--choco);
-  color: #fff;
-}
-
-/* ===============================
-   🪟 FORMULARIOS
-================================= */
-.form-control {
-  background-color: var(--surface-1);
-  color: var(--text);
-  border-color: var(--border);
-}
-.form-control:focus {
-  outline: none;
-  box-shadow: var(--ring);
-  border-color: color-mix(in srgb, var(--choco) 35%, var(--border));
-}
-.form-control::placeholder {
-  color: color-mix(in srgb, var(--muted) 70%, transparent);
-}
-
-/* ===============================
-   📦 CARDS Y TABLAS
-================================= */
-.card {
-  transition: transform .15s ease, box-shadow .15s ease, border-color .15s ease;
-}
-.card:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 12px 24px rgba(0,0,0,.12);
-}
-
-.card-img-top {
-  object-fit: cover;
-  height: 220px;
-}
-
-.table > :not(caption) > * > * {
-  background-color: transparent;
-  border-color: var(--border);
-  color: var(--text);
-}
-
-/* ===============================
-   🏷️ ELEMENTOS ADICIONALES
-================================= */
-.badge-soft {
-  background: color-mix(in srgb, var(--choco) 12%, transparent);
-  color: var(--choco);
-  border: 1px solid color-mix(in srgb, var(--choco) 22%, transparent);
-  padding: .4rem .6rem;
-  border-radius: 999px;
-  font-weight: 600;
-}
-
-.text-muted { color: var(--muted) !important; }
-
-/* Hero overlay */
-.hero-slide { position: relative; overflow: hidden; }
-.hero-overlay { position: absolute; inset: 0; background: var(--overlay); }
-
-/* ===============================
-   🧁 NAVBAR (modo claro/oscuro)
-================================= */
+/* navbar */
 .pastel-navbar {
   background-color: var(--surface-1) !important;
   border-color: var(--border) !important;
-  box-shadow: var(--shadow);
+  box-shadow: var(--shadow) !important;
 }
-
-.pastel-navbar .navbar-brand {
-  color: var(--section-title) !important;
-}
-
+.pastel-navbar .navbar-brand { color: var(--section-title) !important; }
 .pastel-navbar .nav-link {
   color: color-mix(in srgb, var(--text) 90%, transparent) !important;
-  opacity: 0.95;
-  transition: color .15s ease, opacity .15s ease;
+  opacity: .95;
 }
-
 .pastel-navbar .nav-link:hover,
-.pastel-navbar .nav-link:focus {
-  color: var(--section-title) !important;
-  opacity: 1;
-}
-
-.pastel-navbar .nav-link.active {
-  color: var(--choco) !important;
-  font-weight: 600;
-}
-
-/* Inputs dentro de la navbar */
+.pastel-navbar .nav-link:focus { color: var(--section-title) !important; opacity: 1; }
+.pastel-navbar .nav-link.active { color: var(--choco) !important; font-weight: 600; }
 .pastel-navbar .form-control {
   background-color: var(--surface-1) !important;
   color: var(--text) !important;
   border-color: var(--border) !important;
 }
-.pastel-navbar .form-control::placeholder {
-  color: color-mix(in srgb, var(--muted) 70%, transparent) !important;
-}
-
-/* Botones del buscador */
-.pastel-navbar .btn,
-.pastel-navbar .btn-outline-choco,
-.pastel-navbar .btn-buscar {
-  background-color: var(--surface-1);
-  color: var(--text);
-  border-color: var(--border);
-}
-.pastel-navbar .btn:hover,
-.pastel-navbar .btn-outline-choco:hover,
-.pastel-navbar .btn-buscar:hover {
-  background-color: color-mix(in srgb, var(--choco) 16%, var(--surface-1));
-  color: var(--section-title);
-}
-
-/* Icono hamburguesa */
-.pastel-navbar .navbar-toggler {
+.pastel-navbar .btn {
+  background-color: var(--surface-1) !important;
+  color: var(--text) !important;
   border-color: var(--border) !important;
 }
-.pastel-navbar .navbar-toggler:focus { box-shadow: var(--ring); }
-body[data-theme='dark'] .navbar-toggler-icon { filter: invert(0.85); }
+.pastel-navbar .btn:hover {
+  background-color: color-mix(in srgb, var(--choco) 16%, var(--surface-1)) !important;
+  color: var(--section-title) !important;
+}
+.navbar-toggler { border-color: var(--border) !important; }
+.navbar-toggler:focus { box-shadow: var(--ring) !important; }
+:root[data-theme='dark'] .navbar-toggler-icon,
+:root[data-bs-theme='dark'] .navbar-toggler-icon,
+body[data-theme='dark'] .navbar-toggler-icon { filter: invert(.85); }
 
-/* ===============================
-   🧭 TIMELINE (Nosotros)
-================================= */
-.timeline {
-  list-style: none;
-  margin: 0;
-  padding: 0 0 0 1.25rem;
-  position: relative;
-  border-left: 2px dashed var(--border);
+/* inputs / botones */
+.form-control:focus {
+  outline: none;
+  box-shadow: var(--ring) !important;
+  border-color: color-mix(in srgb, var(--choco) 35%, var(--border)) !important;
 }
-.timeline li {
-  position: relative;
-  margin-bottom: 1rem;
-  padding-left: .5rem;
-}
-.timeline-dot {
-  width: .75rem; height: .75rem;
-  border-radius: 50%;
-  background: var(--choco);
-  position: absolute;
-  left: -0.5rem; top: .35rem;
-  box-shadow: 0 0 0 4px color-mix(in srgb, var(--choco) 20%, transparent);
-}
+.btn-choco { background-color: var(--choco) !important; color: #fff !important; border: none !important; }
+.btn-choco:hover { filter: brightness(.92); }
+
+/* utilidades */
+.text-muted { color: var(--muted) !important; }
+.card-img-top { object-fit: cover; height: 220px; }
+
+/* toasts */
+.toast { border-radius: .6rem; font-weight: 500; }
+.toast.bg-success { background-color: #5a2c1e !important; }
+.toast.bg-warning { background-color: #d39e00 !important; }
+.toast.bg-danger  { background-color: #c9302c !important; }
