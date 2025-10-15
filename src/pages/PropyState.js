@@ -1,34 +1,12 @@
-<<<<<<< HEAD
-import { useState } from "react";
-
-/* Ejemplo de Prop y State donde Prop = Parametro y State = Estado Local */
-
-/*export default function PropyState() {
-    const [count, setCount] = useState(10);
-
-    return (
-        <div> 
-            <p>Has hecho clic {count} mas los clic que hiciste</p>
-            <button onClick={() => setCount(count + 1)}>Haz clic aquí para sumar</button>
-        </div>
-    );*/
-export default function PropyState({valorInicial}) {
-    const [count, setCount] = useState(valorInicial);
-
-    return (
-        <div> 
-            <p>Has hecho clic {count} mas los clic que hiciste</p>
-            <button onClick={() => setCount(count + 1 + valorInicial)}>Haz clic aquí para sumar</button>
-        </div>
-    );
-}
-=======
 // src/pages/PropyState.js
 import React from 'react';
 import Nosotros from './Nosotros';
 
-// Usamos createElement para evitar el runtime JSX en este archivo
+/**
+ * Este componente existe solo como alias temporal para mantener compatibilidad
+ * con rutas o referencias antiguas que apuntaban a "/propyState".
+ * Renderiza directamente la página <Nosotros />.
+ */
 export default function PropyState() {
-  return React.createElement(Nosotros, null);
+  return <Nosotros />;
 }
->>>>>>> main

@@ -1,39 +1,122 @@
 /* src/pages/Login.css */
-<<<<<<< HEAD
+
 body {
   font-family: 'Poppins', sans-serif;
+  background-color: #fff7f9;
+  margin: 0;
+  padding: 0;
 }
 
+/* Enlaces */
 a {
   color: #a0522d;
+  text-decoration: none;
 }
 
 a:hover {
   color: #6b2d14;
+  text-decoration: underline;
 }
+
+/* Título */
 h2 {
   color: #a0522d;
   margin-bottom: 20px;
+  font-weight: 600;
 }
-=======
+
+/* Contenedor principal */
 .login-page {
   min-height: 60vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   background: linear-gradient(180deg, #fff7f9 0%, #fff 100%);
 }
 
+/* Tarjeta del login */
 .login-card {
   width: 100%;
   max-width: 420px;
   background: #fff;
   border: 1px solid #f0e6e6;
+  border-radius: 10px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+  padding: 2rem;
+  text-align: center;
 }
 
+/* Botón principal */
 .btn-choco {
   background-color: #6b2d14;
   color: #fff;
   border: none;
+  transition: background-color 0.2s ease-in-out;
 }
+
 .btn-choco:hover {
-  filter: brightness(0.9);
+  background-color: #a0522d;
+  color: #fff;
+  filter: brightness(0.95);
 }
->>>>>>> main
+/* src/pages/Login.css */
+
+/* Fondo de la página de login (se adapta al tema) */
+.login-page {
+  background: linear-gradient(
+    180deg,
+    color-mix(in srgb, var(--rose) 20%, transparent) 0%,
+    transparent 50%
+  );
+}
+
+/* En oscuro, usamos superficies del tema para que no se vea rosado */
+body[data-theme='dark'] .login-page {
+  background: linear-gradient(
+    180deg,
+    color-mix(in srgb, var(--surface-2) 85%, transparent) 0%,
+    transparent 55%
+  );
+}
+
+/* Tarjeta de login coherente con el tema */
+.login-card {
+  background: var(--surface-1);
+  border: 1px solid var(--border);
+  color: var(--text);
+  border-radius: 1rem;
+}
+
+/* Inputs y labels ya heredan de index.css,
+   pero reforzamos bordes y sombras por si acaso */
+.login-card .form-control {
+  background-color: var(--surface-1);
+  color: var(--text);
+  border-color: var(--border);
+  box-shadow: var(--shadow);
+}
+
+.login-card .form-control:focus {
+  box-shadow: var(--ring);
+  border-color: color-mix(in srgb, var(--choco) 35%, var(--border));
+}
+
+/* Botón principal: ya existe .btn-choco en index.css,
+   aquí solo aseguramos ancho y radio agradable */
+.login-card .btn-choco,
+.login-card .btn {
+  border-radius: .9rem;
+}
+
+/* Subtexto y enlace final */
+.login-card .small, 
+.login-card .text-muted {
+  color: var(--muted) !important;
+}
+.login-card a {
+  color: var(--choco);
+  text-decoration: none;
+}
+.login-card a:hover {
+  text-decoration: underline;
+}
