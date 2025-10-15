@@ -1,0 +1,21 @@
+/* src/pages/Login.css */
+.login-page {
+  min-height: 60vh;
+  background: linear-gradient(180deg, #fff7f9 0%, #fff 100%);
+}
+
+.login-card {
+  width: 100%;
+  max-width: 420px;
+  background: #fff;
+  border: 1px solid #f0e6e6;
+}
+
+.btn-choco {
+  background-color: #6b2d14;
+  color: #fff;
+  border: none;
+}
+.btn-choco:hover {
+  filter: brightness(0.9);
+}
