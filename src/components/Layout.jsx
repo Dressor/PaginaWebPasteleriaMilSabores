@@ -9,7 +9,9 @@ export default function Layout() {
   return (
     <>
       <Header />
-      <Outlet />
+      <main className="flex-grow-1">
+        <Outlet />
+      </main>
       <Footer />
       {/* Toasts globales del carrito */}
       <CartToasts />

@@ -240,3 +240,65 @@ body[data-theme='dark'] .bg-light-subtle p,
 body[data-theme='dark'] [style*="background"] p {
   color: var(--text) !important;
 }
+/* ===== Chips legibles en ambas apariencias (claro y oscuro) ===== */
+/* Nuestro estilo "soft" con color de marca */
+.badge-soft {
+  display: inline-block;
+  padding: .4rem .65rem;
+  border-radius: 999px;
+  font-weight: 600;
+  background: color-mix(in srgb, var(--choco) 12%, transparent);
+  color: var(--choco);
+  border: 1px solid color-mix(in srgb, var(--choco) 22%, transparent);
+}
+
+/* Si en algún lado quedó .badge .bg-light o .text-bg-light,
+   forzamos los mismos colores usados en badge-soft */
+.badge.bg-light,
+.badge.text-bg-light {
+  background: color-mix(in srgb, var(--choco) 12%, transparent) !important;
+  color: var(--choco) !important;
+  border: 1px solid color-mix(in srgb, var(--choco) 22%, transparent) !important;
+}
+
+/* En modo oscuro, los mismos tokens ya se aclaran porque var(--choco) cambia;
+   reforzamos por si Bootstrap pisa variables internas */
+:root[data-theme='dark'] .badge-soft,
+:root[data-bs-theme='dark'] .badge-soft,
+body[data-theme='dark'] .badge-soft,
+:root[data-theme='dark'] .badge.bg-light,
+:root[data-bs-theme='dark'] .badge.bg-light,
+body[data-theme='dark'] .badge.bg-light,
+:root[data-theme='dark'] .badge.text-bg-light,
+:root[data-bs-theme='dark'] .badge.text-bg-light,
+body[data-theme='dark'] .badge.text-bg-light {
+  background: color-mix(in srgb, var(--choco) 14%, transparent) !important;
+  color: var(--choco) !important;
+  border-color: color-mix(in srgb, var(--choco) 26%, transparent) !important;
+}
+/* ===== Mejor contraste de títulos en Hero (modo claro y oscuro) ===== */
+.hero-slide h1,
+.hero-slide .display-4,
+.hero-slide .display-5 {
+  color: #ffffff !important;
+  text-shadow: 0 3px 12px rgba(0, 0, 0, 0.65);
+  font-weight: 700;
+}
+
+.hero-slide p,
+.hero-slide .lead {
+  color: #f5f5f5 !important;
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.6);
+}
+
+:root[data-theme='dark'] .hero-slide h1,
+:root[data-theme='dark'] .hero-slide .display-4,
+:root[data-theme='dark'] .hero-slide .display-5 {
+  color: #ffe9d7 !important;
+  text-shadow: 0 2px 6px rgba(0, 0, 0, 0.4);
+}
+
+:root[data-theme='dark'] .hero-slide p,
+:root[data-theme='dark'] .hero-slide .lead {
+  color: #f2d6c7 !important;
+}

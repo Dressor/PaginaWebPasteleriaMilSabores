@@ -18,30 +18,33 @@ export default function Nosotros() {
         />
       </Helmet>
 
-      {/* HERO */}
-      <section className="hero-nosotros rounded-3 shadow-sm my-3">
-        <div className="container d-flex align-items-center py-4">
-          <img
-            src={logo}
-            alt="Logo Pastelería 1000 Sabores"
-            width={56}
-            height={56}
-            className="me-3 d-none d-sm-block"
-            style={{ objectFit: 'cover' }}
-          />
-          <div>
-            <h1 className="display-6 brand-font text-choco mb-1">Nuestra historia</h1>
-            <p className="text-muted mb-0">
-              50 años endulzando Chile con calidad, tradición e innovación.
-            </p>
-            <div className="mt-2 d-flex gap-2 flex-wrap">
-              <Badge bg="" className="badge-soft">Artesanal</Badge>
-              <Badge bg="" className="badge-soft">Recetas familiares</Badge>
-              <Badge bg="" className="badge-soft">Ingredientes frescos</Badge>
+      {/* HEADER con el mismo estilo que Productos/Blogs */}
+      <header className="section-header rounded-3 shadow-sm my-3">
+        <div className="container py-4">
+          <div className="d-flex align-items-center gap-3">
+            <img
+              src={logo}
+              alt="Logo Pastelería 1000 Sabores"
+              width={56}
+              height={56}
+              className="d-none d-sm-block"
+              style={{ objectFit: 'cover' }}
+              onError={(e) => (e.currentTarget.style.display = 'none')}
+            />
+            <div>
+              <h1 className="brand-font text-choco mb-1">Nuestra historia</h1>
+              <p className="text-muted mb-0">
+                50 años endulzando Chile con calidad, tradición e innovación.
+              </p>
+              <div className="mt-2 d-flex gap-2 flex-wrap">
+                <Badge bg="" className="badge-soft">Artesanal</Badge>
+                <Badge bg="" className="badge-soft">Recetas familiares</Badge>
+                <Badge bg="" className="badge-soft">Ingredientes frescos</Badge>
+              </div>
             </div>
           </div>
         </div>
-      </section>
+      </header>
 
       <main className="container py-4">
         <div className="row g-4">
@@ -75,25 +78,29 @@ export default function Nosotros() {
               </div>
             </section>
 
-            {/* Misión / Visión */}
+            {/* Misión / Visión (cards que respetan el tema) */}
             <section className="mb-4">
               <div className="row g-3">
                 <div className="col-12 col-md-6">
-                  <div className="p-3 rounded-3 border bg-white h-100">
-                    <h2 className="h5 text-choco">Misión</h2>
-                    <p className="mb-0">
-                      Ofrecer una experiencia dulce y memorable con tortas y repostería de alta calidad para
-                      todas las ocasiones, celebrando nuestras raíces e impulsando la creatividad.
-                    </p>
+                  <div className="card h-100 shadow-sm">
+                    <div className="card-body">
+                      <h2 className="h5 text-choco">Misión</h2>
+                      <p className="mb-0">
+                        Ofrecer una experiencia dulce y memorable con tortas y repostería de alta calidad para
+                        todas las ocasiones, celebrando nuestras raíces e impulsando la creatividad.
+                      </p>
+                    </div>
                   </div>
                 </div>
                 <div className="col-12 col-md-6">
-                  <div className="p-3 rounded-3 border bg-white h-100">
-                    <h2 className="h5 text-choco">Visión</h2>
-                    <p className="mb-0">
-                      Ser la tienda online líder de repostería en Chile, reconocida por innovación, calidad e
-                      impacto positivo en la comunidad y nuevos talentos gastronómicos.
-                    </p>
+                  <div className="card h-100 shadow-sm">
+                    <div className="card-body">
+                      <h2 className="h5 text-choco">Visión</h2>
+                      <p className="mb-0">
+                        Ser la tienda online líder de repostería en Chile, reconocida por innovación, calidad e
+                        impacto positivo en la comunidad y nuevos talentos gastronómicos.
+                      </p>
+                    </div>
                   </div>
                 </div>
               </div>
