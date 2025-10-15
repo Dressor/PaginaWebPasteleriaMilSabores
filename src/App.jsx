@@ -1,6 +1,8 @@
 import './App.css';
 import { Link, Route, Routes } from 'react-router-dom';
 import Home from './pages/Home';
+import Blogs from './pages/Blogs';
+import BlogPost from './pages/BlogPost';
 import Productos from './pages/Productos';
 import Login from './pages/Login';
 import PropyState from './pages/PropyState';
@@ -30,6 +32,8 @@ function App() {
         <Routes>
           <Route path='/' element={<Home />} />
           <Route path='/productos' element={<Productos />} />
+          <Route path='/blogs' element={<Blogs />} />
+          <Route path='/blogs/:id' element={<BlogPost />} />
           <Route path='/login' element={<Login />} />
           <Route path='/propyState' element={<PropyState valorInicial={100} />} />
           <Route path="/producto/:code" element={<Producto />} />
