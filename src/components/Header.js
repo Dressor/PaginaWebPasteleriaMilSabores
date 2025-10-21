@@ -1,4 +1,3 @@
-// src/components/Header.js
 import React from 'react';
 import { NavLink, Link, useNavigate } from 'react-router-dom';
 import logoPasteleria from '../assets/img/logo.png';
@@ -13,14 +12,15 @@ export default function Header() {
   const navigate = useNavigate();
 
   const handleLogout = () => {
-    logout();
-    navigate('/');
+    logout(); // limpia estado y localStorage
+    navigate('/', { replace: true }); // redirige al home y evita volver con “atrás”
   };
 
   return (
     <header>
       <nav className="navbar navbar-expand-lg pastel-navbar border-bottom">
         <div className="container-fluid">
+          {/* LOGO + NOMBRE */}
           <Link to="/" className="d-flex align-items-center text-decoration-none">
             <img
               className="logo"
@@ -34,6 +34,7 @@ export default function Header() {
             </span>
           </Link>
 
+          {/* MENU RESPONSIVE */}
           <button
             className="navbar-toggler"
             type="button"
@@ -47,14 +48,18 @@ export default function Header() {
           </button>
 
           <div className="collapse navbar-collapse" id="navbarMain">
+            {/* LINKS IZQUIERDA */}
             <ul className="navbar-nav me-auto mb-2 mb-lg-0">
               <li className="nav-item"><NavLink end className={navClass} to="/">Inicio</NavLink></li>
               <li className="nav-item"><NavLink className={navClass} to="/productos">Productos</NavLink></li>
               <li className="nav-item"><NavLink className={navClass} to="/blogs">Blogs</NavLink></li>
               <li className="nav-item"><NavLink className={navClass} to="/nosotros">Nosotros</NavLink></li>
 
+              {/* LOGIN / USUARIO */}
               {!isAuthenticated ? (
-                <li className="nav-item"><NavLink className={navClass} to="/login">Login</NavLink></li>
+                <li className="nav-item">
+                  <NavLink className={navClass} to="/login">Login</NavLink>
+                </li>
               ) : (
                 <li className="nav-item dropdown">
                   <button
@@ -76,6 +81,7 @@ export default function Header() {
               )}
             </ul>
 
+            {/* DERECHA: BUSCADOR, TEMA, CARRITO */}
             <div className="d-flex align-items-center gap-2">
               <form className="d-none d-md-flex" role="search" onSubmit={(e) => e.preventDefault()}>
                 <input

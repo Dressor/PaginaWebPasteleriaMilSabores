@@ -1,45 +1,66 @@
-import { createContext, useContext, useEffect, useMemo, useState } from "react";
+// src/context/auth.jsx
+import { createContext, useContext, useEffect, useMemo, useState } from 'react';
 
+const LS_KEY = 'auth:user';
 const AuthContext = createContext(null);
-const LS_KEY = "auth.user";
 
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(() => {
-    try {
-      if (typeof window === "undefined") return null;         // SSR-safe
-      const saved = window.localStorage.getItem(LS_KEY);
-      return saved ? JSON.parse(saved) : null;
-    } catch { return null; }
+    const saved = localStorage.getItem(LS_KEY);
+    return saved ? JSON.parse(saved) : null;
   });
 
+  // Persiste y limpia en localStorage
   useEffect(() => {
-    try {
-      if (typeof window === "undefined") return;
-      if (user) window.localStorage.setItem(LS_KEY, JSON.stringify(user));
-      else window.localStorage.removeItem(LS_KEY);
-    } catch {}
+    if (user) localStorage.setItem(LS_KEY, JSON.stringify(user));
+    else localStorage.removeItem(LS_KEY);
   }, [user]);
 
-  // Dummy login (cámbialo luego por tu API)
+  // Sincroniza entre pestañas/ventanas
+  useEffect(() => {
+    const onStorage = (e) => {
+      if (e.key === LS_KEY) {
+        setUser(e.newValue ? JSON.parse(e.newValue) : null);
+      }
+    };
+    window.addEventListener('storage', onStorage);
+    return () => window.removeEventListener('storage', onStorage);
+  }, []);
+
+  // (Opcional) caducidad de sesión: 8h
+  useEffect(() => {
+    if (!user?.issuedAt) return;
+    const maxAgeMs = 8 * 60 * 60 * 1000;
+    const expiresAt = user.issuedAt + maxAgeMs;
+    const now = Date.now();
+    if (now >= expiresAt) setUser(null); // ya expiró
+    const t = setTimeout(() => setUser(null), Math.max(0, expiresAt - now));
+    return () => clearTimeout(t);
+  }, [user?.issuedAt]);
+
   const login = async (username, password) => {
-    if (username === "admin" && password === "123456") {
-      const u = { username: "admin", roles: ["admin"] };
+    // Demo: valida admin/123456
+    if (username === 'admin' && password === '123456') {
+      const u = { username: 'admin', issuedAt: Date.now() };
       setUser(u);
-      return { ok: true, user: u };
+      return { ok: true };
     }
-    return { ok: false, message: "Usuario o contraseña incorrectos" };
+    return { ok: false, message: 'Usuario o contraseña incorrectos' };
   };
 
-  const logout = () => setUser(null);
+  const logout = () => {
+    setUser(null);            // limpia estado
+    localStorage.removeItem(LS_KEY); // redundante pero explícito
+  };
 
-  const value = useMemo(() => ({
-    user,
-    isAuthenticated: !!user,
-    login,
-    logout,
-  }), [user]);
+  const value = useMemo(
+    () => ({ user, isAuthenticated: !!user, login, logout }),
+    [user]
+  );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }
 
-export const useAuth = () => useContext(AuthContext);
+export function useAuth() {
+  return useContext(AuthContext);
+}
