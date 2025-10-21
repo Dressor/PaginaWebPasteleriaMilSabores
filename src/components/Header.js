@@ -1,13 +1,22 @@
 // src/components/Header.js
 import React from 'react';
-import { NavLink, Link } from 'react-router-dom';
+import { NavLink, Link, useNavigate } from 'react-router-dom';
 import logoPasteleria from '../assets/img/logo.png';
 import CartBadge from './CartBadge';
 import ThemeToggle from './ThemeToggle';
+import { useAuth } from '../context/auth';
 
 const navClass = ({ isActive }) => `nav-link${isActive ? ' active' : ''}`;
 
 export default function Header() {
+  const { user, isAuthenticated, logout } = useAuth();
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    logout();
+    navigate('/');
+  };
+
   return (
     <header>
       <nav className="navbar navbar-expand-lg pastel-navbar border-bottom">
@@ -43,12 +52,38 @@ export default function Header() {
               <li className="nav-item"><NavLink className={navClass} to="/productos">Productos</NavLink></li>
               <li className="nav-item"><NavLink className={navClass} to="/blogs">Blogs</NavLink></li>
               <li className="nav-item"><NavLink className={navClass} to="/nosotros">Nosotros</NavLink></li>
-              <li className="nav-item"><NavLink className={navClass} to="/login">Login</NavLink></li>
+
+              {!isAuthenticated ? (
+                <li className="nav-item"><NavLink className={navClass} to="/login">Login</NavLink></li>
+              ) : (
+                <li className="nav-item dropdown">
+                  <button
+                    className="nav-link dropdown-toggle bg-transparent border-0"
+                    id="userDropdown"
+                    data-bs-toggle="dropdown"
+                    aria-expanded="false"
+                  >
+                    👋 {user.username}
+                  </button>
+                  <ul className="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
+                    <li>
+                      <button className="dropdown-item text-danger" onClick={handleLogout}>
+                        Cerrar sesión
+                      </button>
+                    </li>
+                  </ul>
+                </li>
+              )}
             </ul>
 
             <div className="d-flex align-items-center gap-2">
               <form className="d-none d-md-flex" role="search" onSubmit={(e) => e.preventDefault()}>
-                <input className="form-control me-2" type="search" placeholder="Buscar..." aria-label="Buscar" />
+                <input
+                  className="form-control me-2"
+                  type="search"
+                  placeholder="Buscar..."
+                  aria-label="Buscar"
+                />
                 <button className="btn btn-buscar" type="submit">Buscar</button>
               </form>
 
