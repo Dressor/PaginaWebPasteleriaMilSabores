@@ -4,6 +4,10 @@ import React, { Suspense, lazy } from 'react';
 import { Route, Routes } from 'react-router-dom';
 import Layout from './components/Layout';
 import Spinner from './components/Spinner';
+import BlogNoticias from './pages/BlogNoticias';
+
+
+
 
 // Páginas (lazy)
 const Home = lazy(() => import('./pages/Home'));
@@ -33,6 +37,7 @@ export default function App() {
           <Route path="/blogs" element={<Blogs />} />
           <Route path="/blog/50-anios" element={<Blog50Anios />} />
           <Route path="/blog/tres-leches" element={<BlogTresLeches />} />
+          <Route path="/blogs/noticias" element={<BlogNoticias />} />
 
           {/* Nosotros (y alias de compatibilidad) */}
           <Route path="/nosotros" element={<Nosotros />} />
