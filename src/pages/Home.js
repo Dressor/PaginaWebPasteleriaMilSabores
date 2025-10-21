@@ -1,10 +1,31 @@
 // src/pages/Home.js
-import React, { useEffect } from 'react';
+import React, { useEffect, useMemo } from 'react';
 import HeroSlider from '../components/HeroSlider';
-import FeaturedProducts from '../components/FeaturedProducts';
+// Si ya no ocuparás FeaturedProducts, puedes borrar esta import
+// import FeaturedProducts from '../components/FeaturedProducts';
+
+import { Container, Row, Col, Card, Carousel, Button } from 'react-bootstrap';
+import productosData from '../data/productos';
 
 export default function Home() {
   useEffect(() => { document.title = 'Inicio | Pastelería 1000 Sabores'; }, []);
+
+  // 1) Toma solo los destacados (o los primeros 9 si no hay flag)
+  const productosDestacados = useMemo(() => {
+    const conFlag = productosData.filter(p => p.destacado);
+    const base = conFlag.length ? conFlag : productosData;
+    return base.slice(0, 9);
+  }, []);
+
+  // 2) Agrupa en chunks de 3 para cada slide del carrusel
+  const productosEnGrupos = useMemo(() => {
+    const size = 3;
+    const grupos = [];
+    for (let i = 0; i < productosDestacados.length; i += size) {
+      grupos.push(productosDestacados.slice(i, i + size));
+    }
+    return grupos;
+  }, [productosDestacados]);
 
   return (
     <>
@@ -45,8 +66,43 @@ export default function Home() {
         </div>
       </section>
 
-      {/* 👉 Productos destacados con botón Agregar */}
-      <FeaturedProducts />
+      {/* 👉 Productos destacados con carrusel en grupos de 3 */}
+      <main className="py-5">
+        <Container>
+          <h2 className="mb-4 brand-font text-choco">Productos destacados</h2>
+
+          <Carousel interval={7000} pause="hover">
+            {productosEnGrupos.map((grupo, index) => (
+              <Carousel.Item key={index}>
+                <Row className="g-4 p-3 p-sm-4 p-md-5">
+                  {grupo.map((producto) => (
+                    <Col md={4} key={producto.codigo}>
+                      <Card className="h-100 shadow-sm">
+                        <Card.Img
+                          variant="top"
+                          src={producto.imagen}
+                          alt={producto.nombre}
+                          style={{ height: '200px', objectFit: 'cover' }}
+                          onError={(e) => { e.currentTarget.src = '/assets/placeholder.jpg'; }}
+                        />
+                        <Card.Body>
+                          <Card.Title className="fw-semibold">{producto.nombre}</Card.Title>
+                          <Card.Text className="text-muted" style={{ minHeight: 48 }}>
+                            {producto.descripcion}
+                          </Card.Text>
+                          <Button className="btn-choco">
+                            Agregar al carrito
+                          </Button>
+                        </Card.Body>
+                      </Card>
+                    </Col>
+                  ))}
+                </Row>
+              </Carousel.Item>
+            ))}
+          </Carousel>
+        </Container>
+      </main>
     </>
   );
 }
