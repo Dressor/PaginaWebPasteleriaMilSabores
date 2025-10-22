@@ -436,16 +436,24 @@ body[data-theme='dark'] .badge.text-bg-light {
   background-color: var(--choco);
 }
 
-/* Mayor contraste de los íconos prev/next en ambos temas */
+/* Ocultar controles de carrusel que interfieren con el contenido */
+.carousel-control-prev,
+.carousel-control-next {
+  display: none !important;
+}
+
+/* Mayor contraste de los íconos prev/next en ambos temas (ya no se usan) */
 .carousel-control-prev-icon,
 .carousel-control-next-icon {
   filter: drop-shadow(0 2px 4px rgba(0,0,0,.35));
+  display: none !important;
 }
 :root[data-theme='dark'] .carousel-control-prev-icon,
 :root[data-bs-theme='dark'] .carousel-control-prev-icon,
 :root[data-theme='dark'] .carousel-control-next-icon,
 :root[data-bs-theme='dark'] .carousel-control-next-icon {
   filter: invert(.85) drop-shadow(0 2px 4px rgba(0,0,0,.55));
+  display: none !important;
 }
 /* ===== Timeline (Nosotros) ===== */
 .timeline {
@@ -663,4 +671,38 @@ body.theme-animating *, html.theme-animating * {
 :root[data-high-contrast="true"] .btn,
 :root[data-high-contrast="true"] .form-control {
   border: 2px solid var(--border) !important;
+}
+
+/* ===== ELIMINAR LÍNEAS DIVISORIAS DE BOOTSTRAP CARDS ===== */
+/* Aplicado globalmente a todas las cards de la aplicación */
+.card {
+  overflow: hidden;
+}
+
+.card > *,
+.card .card-body,
+.card .card-header,
+.card .card-footer,
+.card img,
+.card .ratio {
+  border: none !important;
+  border-top: none !important;
+  border-bottom: none !important;
+  border-left: none !important;
+  border-right: none !important;
+}
+
+.card img {
+  border-radius: 0 !important;
+}
+
+/* Eliminar cualquier pseudo-elemento con bordes dentro de cards */
+.card *::before,
+.card *::after {
+  border: none !important;
+}
+
+/* Forzar estilos limpios en elementos flex dentro de cards */
+.card .d-flex {
+  border: none !important;
 }

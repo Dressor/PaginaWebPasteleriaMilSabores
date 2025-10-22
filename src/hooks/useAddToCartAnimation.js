@@ -20,6 +20,12 @@ export function useAddToCartAnimation() {
     const button = event.currentTarget;
     const rect = button.getBoundingClientRect();
     
+    console.log('🚀 Animación iniciada!', { 
+      x: rect.left + rect.width / 2, 
+      y: rect.top + rect.height / 2, 
+      img: imageSrc 
+    });
+    
     setAnimData({
       x: rect.left + rect.width / 2,
       y: rect.top + rect.height / 2,
@@ -28,10 +34,11 @@ export function useAddToCartAnimation() {
     
     setAnimating(true);
     
-    // Terminar animación después de 800ms
+    // Terminar animación después de 1500ms (ajustado para nueva duración)
     setTimeout(() => {
       setAnimating(false);
-    }, 800);
+      console.log('✅ Animación completada');
+    }, 1500);
   }, []);
 
   return { animating, animData, animateAddToCart };

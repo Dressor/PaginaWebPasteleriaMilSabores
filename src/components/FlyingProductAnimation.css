@@ -2,21 +2,20 @@
 
 .flying-product {
   position: fixed;
-  width: 80px;
-  height: 80px;
+  width: 120px;
+  height: 120px;
   pointer-events: none;
   z-index: 9999;
-  transform: translate(-50%, -50%);
-  animation: flyToCart 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+  animation: flyToCart 1.5s ease-out forwards;
 }
 
 .flying-product img {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  border-radius: 8px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
-  border: 2px solid var(--choco);
+  border-radius: 16px;
+  box-shadow: 0 12px 32px rgba(139, 69, 19, 0.6);
+  border: 4px solid #8B4513;
 }
 
 @keyframes flyToCart {
@@ -24,19 +23,17 @@
     opacity: 1;
     transform: translate(-50%, -50%) scale(1);
   }
-  70% {
+  30% {
     opacity: 1;
-    transform: translate(
-      calc(100vw - 120px - 50%), 
-      calc(-100vh + 80px + 50%)
-    ) scale(0.3);
+    transform: translate(-30%, -60%) scale(0.9);
+  }
+  60% {
+    opacity: 0.8;
+    transform: translate(calc(90vw - 50%), calc(-90vh - 50%)) scale(0.4);
   }
   100% {
     opacity: 0;
-    transform: translate(
-      calc(100vw - 120px - 50%), 
-      calc(-100vh + 80px + 50%)
-    ) scale(0.1);
+    transform: translate(calc(95vw - 50%), calc(-95vh - 50%)) scale(0.1);
   }
 }
 
