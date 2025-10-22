@@ -1,0 +1,196 @@
+/* src/components/AccessibilityMenu.css */
+.accessibility-menu {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  z-index: 1000;
+}
+
+.accessibility-toggle-btn {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: var(--choco);
+  color: white;
+  border: none;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+}
+
+.accessibility-toggle-btn:hover {
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.25);
+  background: color-mix(in srgb, var(--choco) 90%, black);
+}
+
+.accessibility-toggle-btn:focus-visible {
+  outline: 3px solid var(--choco);
+  outline-offset: 4px;
+}
+
+.accessibility-panel {
+  position: absolute;
+  bottom: 70px;
+  right: 0;
+  width: 320px;
+  background: var(--surface-1);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+  overflow: hidden;
+}
+
+.accessibility-panel-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 20px;
+  background: var(--choco);
+  color: white;
+  border-bottom: 1px solid var(--border);
+}
+
+.accessibility-panel-header h3 {
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin: 0;
+}
+
+.btn-close-panel {
+  background: transparent;
+  border: none;
+  color: white;
+  font-size: 28px;
+  line-height: 1;
+  cursor: pointer;
+  padding: 0;
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 4px;
+  transition: background 0.2s ease;
+}
+
+.btn-close-panel:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.accessibility-panel-body {
+  padding: 16px;
+}
+
+.accessibility-option {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.accessibility-option:last-of-type {
+  border-bottom: none;
+}
+
+.option-label {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  cursor: pointer;
+  margin-bottom: 0;
+  flex: 1;
+}
+
+.option-icon {
+  font-size: 24px;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--surface-2);
+  border-radius: 8px;
+  flex-shrink: 0;
+}
+
+.option-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.option-info strong {
+  font-size: 0.95rem;
+  color: var(--text);
+  display: block;
+}
+
+.option-info small {
+  font-size: 0.8rem;
+  color: var(--muted);
+  display: block;
+}
+
+.form-check-input {
+  cursor: pointer;
+  width: 48px;
+  height: 24px;
+  flex-shrink: 0;
+}
+
+.form-check-input:checked {
+  background-color: var(--choco);
+  border-color: var(--choco);
+}
+
+.form-check-input:focus {
+  box-shadow: 0 0 0 0.25rem rgba(90, 44, 30, 0.25);
+}
+
+.accessibility-reset {
+  margin-top: 16px;
+  padding-top: 16px;
+  border-top: 1px solid var(--border);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .accessibility-menu {
+    bottom: 80px;
+    right: 16px;
+  }
+  
+  .accessibility-panel {
+    width: 280px;
+    right: -8px;
+  }
+  
+  .accessibility-toggle-btn {
+    width: 48px;
+    height: 48px;
+  }
+}
+
+/* Animación para el overlay cuando está abierto */
+.accessibility-menu::before {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.3);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+  z-index: -1;
+}
+
+.accessibility-menu:has(.accessibility-panel)::before {
+  opacity: 1;
+  pointer-events: auto;
+}

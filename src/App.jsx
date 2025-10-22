@@ -1,4 +1,12 @@
 // src/App.jsx
+/**
+ * Componente principal de la aplicación.
+ * Define todas las rutas de la aplicación usando React Router con lazy loading
+ * para optimizar el rendimiento inicial.
+ * 
+ * @component
+ * @returns {JSX.Element} Aplicación completa con todas las rutas configuradas
+ */
 import './App.css';
 import React, { Suspense, lazy } from 'react';
 import { Route, Routes } from 'react-router-dom';
@@ -6,11 +14,13 @@ import Layout from './components/Layout';
 import Spinner from './components/Spinner';
 import RequireAuth from './routes/RequireAuth';
 
-// Páginas (lazy)
+// Páginas con lazy loading para optimizar el rendimiento
+// Cada página se carga solo cuando el usuario navega a ella
 const Home = lazy(() => import('./pages/Home'));
 const Productos = lazy(() => import('./pages/Productos'));
 const Producto = lazy(() => import('./pages/Producto'));
 const Login = lazy(() => import('./pages/Login'));
+const Register = lazy(() => import('./pages/Register'));
 const Nosotros = lazy(() => import('./pages/Nosotros'));
 const PropyState = lazy(() => import('./pages/PropyState'));
 const Blogs = lazy(() => import('./pages/Blogs'));
@@ -39,8 +49,9 @@ export default function App() {
           <Route path="/nosotros" element={<Nosotros />} />
           <Route path="/propyState" element={<PropyState />} />
 
-          {/* Login / Carrito */}
+          {/* Login / Registro / Carrito */}
           <Route path="/login" element={<Login />} />
+          <Route path="/registro" element={<Register />} />
           <Route
             path="/carrito"
             element={

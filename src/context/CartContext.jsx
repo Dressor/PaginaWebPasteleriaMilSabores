@@ -1,7 +1,19 @@
 // src/context/CartContext.js
+/**
+ * Contexto del carrito de compras.
+ * Maneja el estado del carrito, cupones, descuentos y validación de órdenes.
+ * 
+ * @module CartContext
+ */
 import React, { createContext, useContext, useMemo, useState, useCallback } from 'react';
 
 /** ==== Utils ==== */
+/**
+ * Formatea un número como moneda chilena (CLP).
+ * 
+ * @param {number} n - Cantidad a formatear
+ * @returns {string} Cantidad formateada como moneda chilena
+ */
 export function fmtCLP(n) {
   try {
     return new Intl.NumberFormat('es-CL', { style: 'currency', currency: 'CLP', maximumFractionDigits: 0 }).format(n || 0);
@@ -10,13 +22,46 @@ export function fmtCLP(n) {
   }
 }
 
-/** Base de cupones (opcional: mantenemos lo que ya tenías) */
+/**
+ * Calcula la fecha mínima de entrega (próximo día hábil).
+ * No se entrega los domingos.
+ * 
+ * @returns {string} Fecha en formato ISO (YYYY-MM-DD)
+ */
+function calcularFechaMinimaEntrega() {
+  const hoy = new Date();
+  let proximaEntrega = new Date(hoy);
+  proximaEntrega.setDate(hoy.getDate() + 1); // Mañana como mínimo
+  
+  // Si mañana es domingo (0), avanzar al lunes (1)
+  if (proximaEntrega.getDay() === 0) {
+    proximaEntrega.setDate(proximaEntrega.getDate() + 1);
+  }
+  
+  // Retornar en formato YYYY-MM-DD local (sin cambio de zona horaria)
+  const year = proximaEntrega.getFullYear();
+  const month = String(proximaEntrega.getMonth() + 1).padStart(2, '0');
+  const day = String(proximaEntrega.getDate()).padStart(2, '0');
+  
+  return `${year}-${month}-${day}`;
+}
+
+/**
+ * Base de datos de cupones disponibles.
+ * Cada cupón tiene un descuento y fecha de expiración.
+ */
 const CUPONES = {
   'SABOR10': { descuento: 0.10, expira: '2025-12-31' },
   'PASTEL15': { descuento: 0.15, expira: '2025-11-30' },
   'DUOC20' : { descuento: 0.20, expira: '2025-10-31' },
 };
 
+/**
+ * Valida si un cupón existe y está vigente.
+ * 
+ * @param {string} codigo - Código del cupón a validar
+ * @returns {Object|null} Datos del cupón si es válido, null si no
+ */
 function validarCupon(codigo) {
   if (!codigo) return null;
   const cup = CUPONES[codigo.toUpperCase()];
@@ -26,7 +71,15 @@ function validarCupon(codigo) {
   return cup;
 }
 
-/** Reglas de descuentos */
+/**
+ * Calcula todos los descuentos aplicables a una orden.
+ * Incluye descuentos por monto, anticipación, aniversario y cupones.
+ * 
+ * @param {number} subtotal - Subtotal de la orden
+ * @param {string} fechaEntrega - Fecha de entrega solicitada
+ * @param {string} cuponCodigo - Código de cupón a aplicar
+ * @returns {Array<Object>} Array de descuentos con key, label y amount
+ */
 function computeDiscounts(subtotal, fechaEntrega, cuponCodigo) {
   const descs = [];
   const entrega = fechaEntrega ? new Date(fechaEntrega) : null;
@@ -68,8 +121,19 @@ function priceSummary(items, { fechaEntrega, cupon } = {}) {
   const subtotal = items.reduce((acc, it) => acc + (it.precio || 0) * (it.qty || 0), 0);
   const descuentos = computeDiscounts(subtotal, fechaEntrega, cupon);
   const totalDescuentos = descuentos.reduce((a, d) => a + d.amount, 0);
-  const total = Math.max(subtotal - totalDescuentos, 0);
-  return { subtotal, descuentos, total };
+  const subtotalConDescuento = Math.max(subtotal - totalDescuentos, 0);
+  
+  // Calcular IVA (19%)
+  const iva = subtotalConDescuento * 0.19;
+  const total = subtotalConDescuento + iva;
+  
+  return { 
+    subtotal, 
+    descuentos, 
+    subtotalConDescuento,
+    iva,
+    total 
+  };
 }
 
 /** ==== Contexto de Carrito ==== */
@@ -83,7 +147,7 @@ export function useCart() {
 
 function CartProviderInner({ children }) {
   const [items, setItems] = useState([]);           // [{codigo, nombre, precio, stock, imagen, qty}]
-  const [fechaEntrega, setFechaEntrega] = useState('');
+  const [fechaEntrega, setFechaEntrega] = useState(() => calcularFechaMinimaEntrega());
   const [cupon, setCupon] = useState('');
   const [toasts, setToasts] = useState([]);        // [{id, message, variant}]
 
@@ -172,19 +236,38 @@ function CartProviderInner({ children }) {
 
   const validarOrden = useCallback(() => {
     const errores = [];
+    
     if (!fechaEntrega) {
       errores.push('Debes seleccionar una fecha de entrega.');
     } else {
       const hoy = new Date();
+      hoy.setHours(0, 0, 0, 0); // Resetear horas para comparar solo fechas
+      
+      const manana = new Date(hoy);
+      manana.setDate(manana.getDate() + 1);
+      
       const entrega = new Date(fechaEntrega);
-      const diffHrs = (entrega - hoy) / (1000 * 60 * 60);
-      if (entrega.getDay() === 0) errores.push('No entregamos los domingos.');
-      if (diffHrs < 24) errores.push('La entrega debe tener al menos 24 horas de anticipación.');
+      entrega.setHours(0, 0, 0, 0);
+      
+      // Validar que sea domingo
+      if (entrega.getDay() === 0) {
+        errores.push('No entregamos los domingos.');
+      }
+      
+      // Validar que sea al menos mañana
+      if (entrega < manana) {
+        errores.push('La fecha de entrega debe ser mínimo mañana.');
+      }
     }
-    if (!items.length) errores.push('Tu carrito está vacío.');
+    
+    if (!items.length) {
+      errores.push('Tu carrito está vacío.');
+    }
+    
     if (cupon && !CUPONES[cupon]) {
       errores.push('El cupón ingresado es inválido o está vencido. Puedes quitarlo o ingresar otro.');
     }
+    
     return errores;
   }, [items, fechaEntrega, cupon]);
 

@@ -21,16 +21,19 @@ import reportWebVitals from './reportWebVitals';
 // Providers
 import { CartProvider } from './context/CartContext';
 import { AuthProvider } from './context/auth';
+import { AccessibilityProvider } from './context/AccessibilityContext';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
     <BrowserRouter>
-      <AuthProvider>
-        <CartProvider>
-          <App />
-        </CartProvider>
-      </AuthProvider>
+      <AccessibilityProvider>
+        <AuthProvider>
+          <CartProvider>
+            <App />
+          </CartProvider>
+        </AuthProvider>
+      </AccessibilityProvider>
     </BrowserRouter>
   </React.StrictMode>
 );

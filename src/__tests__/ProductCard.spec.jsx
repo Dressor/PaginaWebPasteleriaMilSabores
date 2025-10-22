@@ -1,14 +1,32 @@
 import React from 'react';
-import { render, screen, fireEvent } from '@testing-library/react';
-import ProductCard from '../components/ProductCard'; // ajusta la ruta si difiere
+import { render, screen } from '@testing-library/react';
+import { BrowserRouter } from 'react-router-dom';
+import Productos from '../pages/Productos';
+import { CartProvider } from '../context/CartContext';
 
-describe('ProductCard', () => {
-  it('muestra título y precio, y dispara onAdd al click', () => {
-    const onAdd = jasmine.createSpy('onAdd');
-    render(<ProductCard title="Torta Chocolate" price={12990} onAdd={onAdd} />);
-    expect(screen.getByText(/torta chocolate/i)).toBeTruthy();
-    expect(screen.getByText(/\$?\s?12\.990|12.990/)).toBeTruthy();
-    fireEvent.click(screen.getByRole('button'));
-    expect(onAdd).toHaveBeenCalled();
+describe('Productos Page', () => {
+  it('debe renderizar el catálogo de productos', () => {
+    render(
+      <BrowserRouter>
+        <CartProvider>
+          <Productos />
+        </CartProvider>
+      </BrowserRouter>
+    );
+    
+    expect(screen.getByText(/nuestros productos/i)).toBeTruthy();
+  });
+
+  it('debe mostrar filtros de búsqueda', () => {
+    render(
+      <BrowserRouter>
+        <CartProvider>
+          <Productos />
+        </CartProvider>
+      </BrowserRouter>
+    );
+    
+    expect(screen.getByLabelText(/categoría/i)).toBeTruthy();
+    expect(screen.getByLabelText(/búsqueda/i)).toBeTruthy();
   });
 });

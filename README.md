@@ -1,53 +1,187 @@
-# Getting Started with Create React App
+# Pastelería Mil Sabores - E-commerce Web Application
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+Aplicación web de e-commerce desarrollada con React para la Pastelería Mil Sabores, una pastelería artesanal con más de 50 años de tradición en Chile.
 
-## Available Scripts
+## 🎯 Características Principales
 
-In the project directory, you can run:
+- 🛒 **Carrito de Compras**: Sistema completo con persistencia local
+- 🔐 **Autenticación**: Login seguro con validación de formularios
+- 🎨 **Tema Oscuro/Claro**: Cambio dinámico de tema con persistencia
+- 💳 **Sistema de Cupones**: Descuentos automáticos y cupones promocionales
+- 📱 **Diseño Responsivo**: Optimizado para móviles, tablets y desktop
+- ♿ **Accesibilidad**: Cumple con estándares WCAG
+- 🚀 **Lazy Loading**: Carga optimizada de componentes
+- ✅ **Testing**: Suite completa de tests con Karma y Jasmine
+
+## 🛠️ Tecnologías Utilizadas
+
+- **React 18.3.1**: Biblioteca principal
+- **React Router 6**: Navegación y ruteo
+- **Bootstrap 5**: Framework CSS
+- **React Bootstrap**: Componentes React de Bootstrap
+- **Framer Motion**: Animaciones fluidas
+- **React Helmet**: Gestión de metadatos SEO
+- **Karma + Jasmine**: Framework de testing
+
+## 📋 Requisitos Previos
+
+- Node.js (v14 o superior)
+- npm (v6 o superior)
+
+## 🚀 Instalación
+
+1. Clonar el repositorio:
+```bash
+git clone https://github.com/Dressor/PaginaWebPasteleriaMilSabores.git
+cd PaginaWebPasteleriaMilSabores
+```
+
+2. Instalar dependencias:
+```bash
+npm install
+```
+
+3. Iniciar la aplicación en modo desarrollo:
+```bash
+npm start
+```
+
+La aplicación se abrirá en [http://localhost:3000](http://localhost:3000)
+
+## 📜 Scripts Disponibles
 
 ### `npm start`
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+Ejecuta la aplicación en modo desarrollo.\
+Abre [http://localhost:3000](http://localhost:3000) en tu navegador.
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+La página se recargará automáticamente cuando hagas cambios.\
+Los errores de lint se mostrarán en la consola.
 
 ### `npm test`
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+Ejecuta los tests con Karma y Jasmine.\
+Los tests se ejecutan en modo watch por defecto.
+
+### `npm run test:karma`
+
+Ejecuta los tests una sola vez (útil para CI/CD).
 
 ### `npm run build`
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+Construye la aplicación para producción en la carpeta `build`.\
+Optimiza React en modo producción para el mejor rendimiento.
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+Los archivos se minimizan y los nombres incluyen hashes.\
+¡Tu aplicación está lista para ser desplegada!
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+## 📂 Estructura del Proyecto
 
-### `npm run eject`
+```
+src/
+├── components/          # Componentes reutilizables
+│   ├── Layout.jsx      # Layout principal
+│   ├── Header.js       # Barra de navegación
+│   ├── Footer.jsx      # Pie de página
+│   └── ...
+├── pages/              # Páginas de la aplicación
+│   ├── Home.js         # Página de inicio
+│   ├── Productos.js    # Catálogo de productos
+│   ├── Carrito.jsx     # Carrito de compras
+│   ├── Login.js        # Inicio de sesión
+│   └── ...
+├── context/            # Contextos de React
+│   ├── CartContext.jsx # Estado global del carrito
+│   └── auth.jsx        # Autenticación
+├── utils/              # Funciones utilitarias
+├── data/               # Datos estáticos
+└── styles/             # Estilos CSS
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+```
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+## 🔐 Credenciales de Prueba
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+Para probar el sistema de autenticación:
+- **Usuario**: admin
+- **Contraseña**: 123456
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+## 🎨 Sistema de Cupones
 
-## Learn More
+La aplicación incluye cupones de descuento:
+- **SABOR10**: 10% de descuento (válido hasta 31/12/2025)
+- **PASTEL15**: 15% de descuento (válido hasta 30/11/2025)
+- **DUOC20**: 20% de descuento (válido hasta 31/10/2025)
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+### Descuentos Automáticos
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+- **10%**: En compras sobre $30,000
+- **5%**: Reserva con 3+ días de anticipación
+- **20%**: Especial aniversario (15 de noviembre)
 
-### Code Splitting
+## ♿ Accesibilidad
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+- Etiquetas ARIA apropiadas
+- Navegación por teclado completa
+- Contraste de colores adecuado
+- Soporte para lectores de pantalla
+- Skip links para navegación rápida
+
+## 🧪 Testing
+
+El proyecto incluye tests automatizados:
+
+```bash
+# Ejecutar tests en modo watch
+npm test
+
+# Ejecutar tests una vez
+npm run test:karma
+```
+
+Los tests cubren:
+- Componentes principales
+- Funcionalidades del carrito
+- Sistema de autenticación
+- Validaciones de formularios
+- Utilidades y helpers
+
+## 📱 Responsive Design
+
+La aplicación está optimizada para:
+- 📱 Móviles (320px - 767px)
+- 📊 Tablets (768px - 1023px)
+- 💻 Desktop (1024px+)
+
+## 🌐 Navegadores Soportados
+
+- Chrome (últimas 2 versiones)
+- Firefox (últimas 2 versiones)
+- Safari (últimas 2 versiones)
+- Edge (últimas 2 versiones)
+
+## 🤝 Contribución
+
+Este proyecto fue desarrollado como parte de la evaluación académica para el curso DSY1104.
+
+### Equipo de Desarrollo
+- Dazcarategui Team
+
+## 📄 Licencia
+
+Este proyecto es de uso académico.
+
+## 📞 Contacto
+
+- Email: contacto@1000sabores.cl
+- Teléfono: +56 9 8765 4321
+- Dirección: Av. Principal 1234, Santiago
+
+## 🔗 Enlaces Útiles
+
+- [Documentación de React](https://reactjs.org/)
+- [React Router](https://reactrouter.com/)
+- [Bootstrap 5](https://getbootstrap.com/)
+- [Create React App](https://create-react-app.dev/)
 
 ### Analyzing the Bundle Size
 

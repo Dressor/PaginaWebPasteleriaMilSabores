@@ -1,0 +1,86 @@
+/* src/components/ProductCardSkeleton.css */
+
+.skeleton-card {
+  pointer-events: none;
+  user-select: none;
+}
+
+.skeleton {
+  background: linear-gradient(
+    90deg,
+    var(--surface-2) 0%,
+    var(--surface-1) 50%,
+    var(--surface-2) 100%
+  );
+  background-size: 200% 100%;
+  animation: skeleton-loading 1.5s ease-in-out infinite;
+  border-radius: 4px;
+}
+
+@keyframes skeleton-loading {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}
+
+.skeleton-image {
+  width: 100%;
+  height: 220px;
+  border-radius: 0;
+}
+
+.skeleton-title {
+  height: 24px;
+  width: 80%;
+}
+
+.skeleton-text {
+  height: 16px;
+  width: 100%;
+}
+
+.skeleton-button {
+  height: 38px;
+  width: 100%;
+  border-radius: 6px;
+}
+
+/* Variaciones de ancho para efecto más realista */
+.skeleton-text:nth-child(2) {
+  width: 90%;
+}
+
+.skeleton-text:nth-child(3) {
+  width: 70%;
+}
+
+/* Modo oscuro */
+:root[data-theme='dark'] .skeleton,
+:root[data-bs-theme='dark'] .skeleton,
+body[data-theme='dark'] .skeleton {
+  background: linear-gradient(
+    90deg,
+    #2a2220 0%,
+    #3a302b 50%,
+    #2a2220 100%
+  );
+  background-size: 200% 100%;
+}
+
+/* Accesibilidad: reducir movimiento */
+@media (prefers-reduced-motion: reduce) {
+  .skeleton {
+    animation: none;
+    background: var(--surface-2);
+  }
+}
+
+/* Responsive: ajustar altura en móviles */
+@media (max-width: 576px) {
+  .skeleton-image {
+    height: 180px;
+  }
+}

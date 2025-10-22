@@ -1,21 +1,33 @@
 // src/pages/Home.js
+/**
+ * Página de inicio de la aplicación.
+ * Muestra el hero slider, introducción a la pastelería y productos destacados.
+ * 
+ * @component
+ * @returns {JSX.Element} Página de inicio completa
+ */
 import React, { useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import HeroSlider from '../components/HeroSlider';
 import FeaturedProducts from '../components/FeaturedProducts';
 
 export default function Home() {
-  useEffect(() => { document.title = 'Inicio | Pastelería 1000 Sabores'; }, []);
+  // Actualizar el título de la página
+  useEffect(() => { 
+    document.title = 'Inicio | Pastelería 1000 Sabores'; 
+  }, []);
 
   return (
     <>
-      {/* Hero principal (tu componente actual) */}
+      {/* Hero principal con slider de imágenes */}
       <HeroSlider />
 
-      {/* Intro */}
-      <section className="container py-5">
+      {/* Sección de introducción y valores de la pastelería */}
+      <section className="container py-5" aria-labelledby="welcome-heading">
         <header className="mb-4">
-          <h1 className="brand-font text-choco mb-2">Bienvenido a Pastelería 1000 Sabores</h1>
+          <h1 id="welcome-heading" className="brand-font text-choco mb-2">
+            Bienvenido a Pastelería 1000 Sabores
+          </h1>
           <p className="lead mb-0">
             Somos una pastelería artesanal con más de 50 años de tradición. Elaboramos tortas,
             postres y productos personalizados con ingredientes seleccionados y el cariño de siempre.
