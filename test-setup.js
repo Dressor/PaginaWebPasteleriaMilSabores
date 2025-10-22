@@ -1,14 +1,16 @@
-import '@testing-library/jasmine-dom'; // <- agrega toBeInTheDocument, etc.
+// test-setup.js
+/* eslint-disable no-undef */
+(function () {
+  const g = typeof globalThis !== 'undefined' ? globalThis
+        : typeof window !== 'undefined' ? window
+        : typeof global !== 'undefined' ? global
+        : this;
 
-
-// Opcional: silenciar warnings de React Router en tests
-const originalWarn = console.warn;
-console.warn = (...args) => {
-  if (
-    typeof args[0] === 'string' &&
-    args[0].includes('React Router Future Flag Warning')
-  ) {
-    return;
+  // Alias Jest -> Jasmine
+  if (typeof g.it === 'function' && typeof g.test !== 'function') {
+    g.test = g.it;
   }
-  originalWarn(...args);
-};
+  if (typeof g.xit === 'function' && typeof g.xtest !== 'function') {
+    g.xtest = g.xit;
+  }
+})();

@@ -1,29 +1,41 @@
 // karma.conf.js
-const webpackConfig = require('./webpack.test');
-
-module.exports = function (config) {
+module.exports = function(config) {
   config.set({
     frameworks: ['jasmine'],
     files: [
-      { pattern: 'test-setup.js', watched: false },
-      { pattern: 'src/**/*.(test|spec).@(js|jsx)', watched: false },
-      { pattern: 'src/**/__tests__/**/*.@(js|jsx)', watched: false }
+      // setup (matchers/utilidades, si usas alguno)
+      { pattern: 'test-setup.js', watched: false }, 
+      // TODOS los tests en src
+      { pattern: 'src/**/*.spec.js', watched: false },
+      { pattern: 'src/**/*.spec.jsx', watched: false },
+      { pattern: 'src/**/__tests__/**/*.js', watched: false },
+      { pattern: 'src/**/__tests__/**/*.jsx', watched: false },
     ],
     preprocessors: {
       'test-setup.js': ['webpack', 'sourcemap'],
-      'src/**/*.(test|spec).@(js|jsx)': ['webpack', 'sourcemap'],
-      'src/**/__tests__/**/*.@(js|jsx)': ['webpack', 'sourcemap']
+      'src/**/*.spec.js': ['webpack', 'sourcemap'],
+      'src/**/*.spec.jsx': ['webpack', 'sourcemap'],
+      'src/**/__tests__/**/*.js': ['webpack', 'sourcemap'],
+      'src/**/__tests__/**/*.jsx': ['webpack', 'sourcemap'],
     },
-    webpack: webpackConfig,
-    webpackMiddleware: { stats: 'errors-only' },
-
-    reporters: ['progress'],
+    webpack: {
+      mode: 'development',
+      devtool: 'inline-source-map',
+      module: {
+        rules: [
+          { test: /\.(js|jsx)$/, exclude: /node_modules/, use: { loader: 'babel-loader' } },
+          { test: /\.css$/, use: ['style-loader', 'css-loader'] },
+          { test: /\.(png|jpe?g|gif|svg)$/i, type: 'asset/resource' },
+        ]
+      },
+      resolve: { extensions: ['.js', '.jsx'] }
+    },
+    reporters: ['progress', 'coverage'],
+    coverageReporter: {
+      dir: 'coverage',
+      reporters: [{ type: 'html' }, { type: 'text-summary' }]
+    },
     browsers: ['ChromeHeadless'],
-    singleRun: false,
-    autoWatch: true,
-    client: {
-      jasmine: { random: false, timeoutInterval: 10000 },
-      clearContext: false
-    }
+    singleRun: true
   });
 };

@@ -1,6 +1,6 @@
 {
   "presets": [
-    ["@babel/preset-env", { "targets": { "chrome": "100" }, "useBuiltIns": "usage", "corejs": 3 }],
+    ["@babel/preset-env", { "targets": { "chrome": "100" } }],
     ["@babel/preset-react", { "runtime": "automatic" }]
   ]
 }
