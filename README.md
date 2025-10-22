@@ -5,9 +5,15 @@ Aplicación web de e-commerce desarrollada con React para la Pastelería Mil Sab
 ## 🎯 Características Principales
 
 - 🛒 **Carrito de Compras**: Sistema completo con persistencia local
-- 🔐 **Autenticación**: Login seguro con validación de formularios
+- � **Cálculo de IVA**: Desglose automático de IVA (19%) en el carrito
+- 📅 **Fechas Inteligentes**: Sistema de entrega que respeta días hábiles (excluye domingos)
+- �🔐 **Autenticación**: Login seguro con validación de formularios
 - 🎨 **Tema Oscuro/Claro**: Cambio dinámico de tema con persistencia
 - 💳 **Sistema de Cupones**: Descuentos automáticos y cupones promocionales
+- ✨ **Animaciones Premium**: 
+  - Confetti de celebración al confirmar pedido
+  - Animación de producto volando al carrito
+  - Skeleton loaders para mejor UX
 - 📱 **Diseño Responsivo**: Optimizado para móviles, tablets y desktop
 - ♿ **Accesibilidad**: Cumple con estándares WCAG
 - 🚀 **Lazy Loading**: Carga optimizada de componentes
@@ -19,6 +25,7 @@ Aplicación web de e-commerce desarrollada con React para la Pastelería Mil Sab
 - **React Router 6**: Navegación y ruteo
 - **Bootstrap 5**: Framework CSS
 - **React Bootstrap**: Componentes React de Bootstrap
+- **canvas-confetti**: Efectos de celebración con confetti
 - **Framer Motion**: Animaciones fluidas
 - **React Helmet**: Gestión de metadatos SEO
 - **Karma + Jasmine**: Framework de testing
@@ -83,20 +90,23 @@ src/
 │   ├── Layout.jsx      # Layout principal
 │   ├── Header.js       # Barra de navegación
 │   ├── Footer.jsx      # Pie de página
+│   ├── FlyingProductAnimation.jsx  # Animación de producto al carrito
+│   ├── ProductCardSkeleton.jsx     # Skeleton loaders
 │   └── ...
 ├── pages/              # Páginas de la aplicación
 │   ├── Home.js         # Página de inicio
 │   ├── Productos.js    # Catálogo de productos
-│   ├── Carrito.jsx     # Carrito de compras
+│   ├── Carrito.jsx     # Carrito de compras (con IVA y fechas inteligentes)
 │   ├── Login.js        # Inicio de sesión
 │   └── ...
 ├── context/            # Contextos de React
-│   ├── CartContext.jsx # Estado global del carrito
+│   ├── CartContext.jsx # Estado global del carrito (con cálculo de IVA)
 │   └── auth.jsx        # Autenticación
+├── hooks/              # Custom Hooks
+│   └── useAddToCartAnimation.js  # Hook para animación de productos
 ├── utils/              # Funciones utilitarias
 ├── data/               # Datos estáticos
 └── styles/             # Estilos CSS
-
 ```
 
 ## 🔐 Credenciales de Prueba
@@ -118,6 +128,21 @@ La aplicación incluye cupones de descuento:
 - **5%**: Reserva con 3+ días de anticipación
 - **20%**: Especial aniversario (15 de noviembre)
 
+### Cálculo de Precios
+
+El carrito muestra un desglose completo:
+- **Subtotal**: Suma de productos
+- **Descuentos**: Cupones y descuentos automáticos aplicados
+- **IVA (19%)**: Cálculo automático del impuesto
+- **Total**: Precio final a pagar
+
+## 📅 Sistema de Fechas de Entrega
+
+- **Validación inteligente**: Solo permite días hábiles (lunes a sábado)
+- **Auto-fill**: Se completa automáticamente con el próximo día hábil disponible
+- **Sin domingos**: El sistema excluye domingos automáticamente
+- **Fecha mínima**: Siempre el día hábil siguiente al actual
+
 ## ♿ Accesibilidad
 
 - Etiquetas ARIA apropiadas
@@ -125,6 +150,20 @@ La aplicación incluye cupones de descuento:
 - Contraste de colores adecuado
 - Soporte para lectores de pantalla
 - Skip links para navegación rápida
+- Respeto por preferencias de movimiento reducido (prefers-reduced-motion)
+
+## ✨ Experiencia de Usuario
+
+### Animaciones Premium
+- **Confetti de celebración**: Al confirmar un pedido (3 segundos de celebración)
+- **Flying Product Animation**: Efecto visual al agregar productos al carrito
+- **Skeleton Loaders**: Placeholders animados durante la carga de productos (800ms)
+
+### Optimizaciones Visuales
+- Cards limpias sin bordes internos
+- Efectos hover suaves en productos
+- Transiciones fluidas entre estados
+- Compatible con Firefox, Chrome, Safari y Edge
 
 ## 🧪 Testing
 
