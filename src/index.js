@@ -3,12 +3,16 @@ import React from 'react';
 import ReactDOM from 'react-dom/client';
 import { BrowserRouter } from 'react-router-dom';
 
-// CSS
+// === Estilos base ===
+// 1) Bootstrap primero para poder sobrescribir con tu index.css
 import 'bootstrap/dist/css/bootstrap.min.css';
+// 2) Iconos (usa la misma tipografía que Bootstrap, OK)
 import 'bootstrap-icons/font/bootstrap-icons.css';
+// 3) Tus estilos (sobrescriben lo anterior)
 import './index.css';
 
-// **JS de Bootstrap (necesario para dropdowns, modals, etc.)**
+// === JS Bootstrap ===
+// Carga el bundle (incluye Popper) para dropdowns, modals, offcanvas, tooltips, etc.
 import 'bootstrap/dist/js/bootstrap.bundle.min.js';
 
 import App from './App';

@@ -1,3 +1,4 @@
+// src/pages/Producto.js
 import React from 'react';
 import { useParams, Link } from 'react-router-dom';
 import productos from '../data/productos';
@@ -13,7 +14,7 @@ export default function Producto() {
   if (!producto) {
     return (
       <main className="container py-4">
-        <div className="alert alert-warning">
+        <div className="alert alert-warning" role="alert">
           Producto no encontrado. <Link to="/productos" className="alert-link">Volver al listado</Link>.
         </div>
       </main>
@@ -39,6 +40,7 @@ export default function Producto() {
                   src={producto.imagen}
                   alt={producto.nombre}
                   className="img-fluid rounded"
+                  loading="lazy"
                   style={{ maxHeight: '100%', maxWidth: '100%', objectFit: 'cover' }}
                 />
               ) : (
@@ -49,9 +51,10 @@ export default function Producto() {
 
           <div className="col-12 col-md-6">
             <h2 className="mb-1">{producto.nombre}</h2>
-            <p className="text-muted">{producto.categoria}</p>
+            <p className="text-muted mb-2">{producto.categoria}</p>
             <p>{producto.descripcion}</p>
-            <p><strong>Stock:</strong> {Number.isFinite(producto.stock) ? producto.stock : '—'} unidades</p>
+            <p className="mb-3"><strong>Stock:</strong> {Number.isFinite(producto.stock) ? producto.stock : '—'} unidades</p>
+
             <div className="d-flex align-items-center gap-3">
               <strong className="fs-4 text-choco">
                 ${producto.precio.toLocaleString('es-CL')}
@@ -60,6 +63,7 @@ export default function Producto() {
                 className="btn btn-choco"
                 onClick={() => addToCart(producto, 1)}
                 disabled={atLimit}
+                aria-disabled={atLimit}
               >
                 {atLimit ? 'Sin stock' : 'Añadir al carrito'}
               </button>

@@ -1,3 +1,4 @@
+// src/components/Header.js
 import React from 'react';
 import { NavLink, Link, useNavigate } from 'react-router-dom';
 import logoPasteleria from '../assets/img/logo.png';
@@ -12,29 +13,29 @@ export default function Header() {
   const navigate = useNavigate();
 
   const handleLogout = () => {
-    logout(); // limpia estado y localStorage
-    navigate('/', { replace: true }); // redirige al home y evita volver con “atrás”
+    logout();                        // limpia estado + localStorage
+    navigate('/', { replace: true }); // vuelve al Home y evita “atrás”
   };
 
   return (
     <header>
-      <nav className="navbar navbar-expand-lg pastel-navbar border-bottom">
-        <div className="container-fluid">
-          {/* LOGO + NOMBRE */}
-          <Link to="/" className="d-flex align-items-center text-decoration-none">
+      {/* pastel-navbar viene de tu index.css. 
+         Sumamos clases Bootstrap base: navbar, navbar-expand-lg */}
+      <nav className="navbar navbar-expand-lg pastel-navbar border-bottom" aria-label="Barra de navegación principal">
+        {/* container para ancho legible; si quieres todo pegado a los bordes, cambia a container-fluid */}
+        <div className="container">
+          {/* BRAND (logo + texto) */}
+          <Link to="/" className="navbar-brand d-flex align-items-center gap-2 text-decoration-none">
             <img
-              className="logo"
               src={logoPasteleria}
               alt="Logo Pastelería 1000 Sabores"
               height={40}
               onError={(e) => { e.currentTarget.style.display = 'none'; }}
             />
-            <span className="navbar-brand ms-2 mb-0 brand-font text-choco">
-              Pastelería 1000 Sabores
-            </span>
+            <span className="brand-font text-choco">Pastelería 1000 Sabores</span>
           </Link>
 
-          {/* MENU RESPONSIVE */}
+          {/* Toggler mobile */}
           <button
             className="navbar-toggler"
             type="button"
@@ -47,30 +48,43 @@ export default function Header() {
             <span className="navbar-toggler-icon"></span>
           </button>
 
+          {/* Contenido colapsable */}
           <div className="collapse navbar-collapse" id="navbarMain">
-            {/* LINKS IZQUIERDA */}
+            {/* Links a la izquierda */}
             <ul className="navbar-nav me-auto mb-2 mb-lg-0">
-              <li className="nav-item"><NavLink end className={navClass} to="/">Inicio</NavLink></li>
-              <li className="nav-item"><NavLink className={navClass} to="/productos">Productos</NavLink></li>
-              <li className="nav-item"><NavLink className={navClass} to="/blogs">Blogs</NavLink></li>
-              <li className="nav-item"><NavLink className={navClass} to="/nosotros">Nosotros</NavLink></li>
+              <li className="nav-item">
+                <NavLink end className={navClass} to="/">Inicio</NavLink>
+              </li>
+              <li className="nav-item">
+                <NavLink className={navClass} to="/productos">Productos</NavLink>
+              </li>
+              <li className="nav-item">
+                <NavLink className={navClass} to="/blogs">Blogs</NavLink>
+              </li>
+              <li className="nav-item">
+                <NavLink className={navClass} to="/nosotros">Nosotros</NavLink>
+              </li>
 
-              {/* LOGIN / USUARIO */}
+              {/* Auth */}
               {!isAuthenticated ? (
                 <li className="nav-item">
                   <NavLink className={navClass} to="/login">Login</NavLink>
                 </li>
               ) : (
                 <li className="nav-item dropdown">
+                  {/* Botón estilo link para dropdown. 
+                     Con bundle de Bootstrap cargado, funciona out-of-the-box */}
                   <button
                     className="nav-link dropdown-toggle bg-transparent border-0"
                     id="userDropdown"
                     data-bs-toggle="dropdown"
                     aria-expanded="false"
+                    aria-haspopup="true"
                   >
-                    👋 {user.username}
+                    👋 {user?.username ?? 'Usuario'}
                   </button>
                   <ul className="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
+                    {/* Si en el futuro agregas /admin o /perfil, puedes añadir items aquí */}
                     <li>
                       <button className="dropdown-item text-danger" onClick={handleLogout}>
                         Cerrar sesión
@@ -81,19 +95,25 @@ export default function Header() {
               )}
             </ul>
 
-            {/* DERECHA: BUSCADOR, TEMA, CARRITO */}
+            {/* Derecha: buscador + tema + carrito */}
             <div className="d-flex align-items-center gap-2">
+              {/* Buscador oculto en XS para no saturar la navbar */}
               <form className="d-none d-md-flex" role="search" onSubmit={(e) => e.preventDefault()}>
+                <label htmlFor="navbarSearch" className="visually-hidden">Buscar</label>
                 <input
+                  id="navbarSearch"
                   className="form-control me-2"
                   type="search"
-                  placeholder="Buscar..."
-                  aria-label="Buscar"
+                  placeholder="Buscar…"
+                  aria-label="Buscar productos o artículos"
                 />
-                <button className="btn btn-buscar" type="submit">Buscar</button>
+                <button className="btn btn-choco" type="submit">Buscar</button>
               </form>
 
+              {/* Toggle de tema (respeta tus variables CSS) */}
               <ThemeToggle />
+
+              {/* Badge del carrito (ícono + contador) */}
               <CartBadge />
             </div>
           </div>

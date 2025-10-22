@@ -1,73 +1,37 @@
-/* Paleta de colores y fuentes */
-:root {
-  --cream: #FFF5E1;
-  --rose: #FFC0CB;
-  --rose-600: #ff9fb3;
-  --choco: #8B4513;
-  --choco-700: #6e3610;
-  --text-main: #5D4037;
-  --text-secondary: #B0BEC5;
-}
+/* ==== Home.css (acotado a la página para no pisar index.css) ==== */
 
-/* Fondo y texto principal */
-body, .bg-cream {
-  background-color: var(--cream) !important;
-  color: var(--text-main);
-  font-family: 'Lato', system-ui, Arial, sans-serif;
-}
+/* Colores de texto compatibles con tu paleta global */
+.home-title,
+.card-title { color: var(--text); }
+.card-text { color: var(--muted); }
 
-/* Header */
-.bg-rose-subtle {
-  background-color: #ffe4ea !important;
-}
-
-.brand-font {
-  font-family: 'Pacifico', cursive;
-}
-
-.text-choco {
-  color: var(--choco) !important;
-}
-
-/* Card estilos */
-.card-title {
-  color: var(--text-main);
-}
-
-.card-text {
-  color: var(--text-secondary);
-}
-
-/* Botones personalizados */
+/* Botón de marca (coincide con tus tokens globales) */
 .btn-choco {
-  background-color: var(--choco);
-  color: #fff;
-  border-color: var(--choco);
+  background-color: var(--choco) !important;
+  color: #fff !important;
+  border-color: var(--choco) !important;
 }
-
 .btn-choco:hover {
-  background-color: var(--choco-700);
-  border-color: var(--choco-700);
+  filter: brightness(.92);
+  border-color: var(--choco) !important;
 }
 
-/* Imágenes en cards y header */
+/* Imágenes fluidas (refuerzo; ya está global, pero no estorba) */
 .img-fluid {
   max-width: 100%;
   height: auto;
   border-radius: 8px;
 }
 
-/* Responsive ratio para imagen principal */
+/* Contenedores de relación (hero o imagen destacada) */
 .ratio {
-  background: #fff5e1;
+  background: var(--cream);
   border-radius: 12px;
   overflow: hidden;
 }
 
-/* Espaciado en el main */
+/* Espaciado vertical del main (el Layout ya pone py-3, esto es para secciones internas) */
 main {
-  padding-top: 3rem;
-  padding-bottom: 3rem;
+  padding-top: 0; /* Layout controla el espaciado global */
+  padding-bottom: 0;
 }
-
-

@@ -29,6 +29,7 @@ export default function Nosotros() {
               height={56}
               className="d-none d-sm-block"
               style={{ objectFit: 'cover' }}
+              loading="lazy"
               onError={(e) => (e.currentTarget.style.display = 'none')}
             />
             <div>
@@ -36,7 +37,7 @@ export default function Nosotros() {
               <p className="text-muted mb-0">
                 50 años endulzando Chile con calidad, tradición e innovación.
               </p>
-              <div className="mt-2 d-flex gap-2 flex-wrap">
+              <div className="mt-2 d-flex gap-2 flex-wrap" aria-label="Etiquetas de identidad de marca">
                 <Badge bg="" className="badge-soft">Artesanal</Badge>
                 <Badge bg="" className="badge-soft">Recetas familiares</Badge>
                 <Badge bg="" className="badge-soft">Ingredientes frescos</Badge>
@@ -51,8 +52,8 @@ export default function Nosotros() {
           {/* Columna principal */}
           <div className="col-12 col-lg-8">
             {/* Valores */}
-            <section className="mb-4">
-              <h2 className="h4 text-choco mb-3">Nuestros valores</h2>
+            <section className="mb-4" aria-labelledby="valores-title">
+              <h2 id="valores-title" className="h4 text-choco mb-3">Nuestros valores</h2>
               <div className="row g-3">
                 <div className="col-12 col-md-4">
                   <div className="value-card h-100 p-3 rounded-3 border">
@@ -78,13 +79,14 @@ export default function Nosotros() {
               </div>
             </section>
 
-            {/* Misión / Visión (cards que respetan el tema) */}
-            <section className="mb-4">
+            {/* Misión / Visión */}
+            <section className="mb-4" aria-labelledby="mision-vision-title">
+              <h2 id="mision-vision-title" className="visually-hidden">Misión y Visión</h2>
               <div className="row g-3">
                 <div className="col-12 col-md-6">
                   <div className="card h-100 shadow-sm">
                     <div className="card-body">
-                      <h2 className="h5 text-choco">Misión</h2>
+                      <h3 className="h5 text-choco">Misión</h3>
                       <p className="mb-0">
                         Ofrecer una experiencia dulce y memorable con tortas y repostería de alta calidad para
                         todas las ocasiones, celebrando nuestras raíces e impulsando la creatividad.
@@ -95,7 +97,7 @@ export default function Nosotros() {
                 <div className="col-12 col-md-6">
                   <div className="card h-100 shadow-sm">
                     <div className="card-body">
-                      <h2 className="h5 text-choco">Visión</h2>
+                      <h3 className="h5 text-choco">Visión</h3>
                       <p className="mb-0">
                         Ser la tienda online líder de repostería en Chile, reconocida por innovación, calidad e
                         impacto positivo en la comunidad y nuevos talentos gastronómicos.
@@ -107,8 +109,8 @@ export default function Nosotros() {
             </section>
 
             {/* Hitos */}
-            <section className="mb-4">
-              <h2 className="h4 text-choco">Hitos</h2>
+            <section className="mb-4" aria-labelledby="hitos-title">
+              <h2 id="hitos-title" className="h4 text-choco">Hitos</h2>
               <ol className="timeline">
                 <li>
                   <div className="timeline-dot" />
@@ -135,8 +137,8 @@ export default function Nosotros() {
             </section>
 
             {/* Equipo */}
-            <section className="mb-2">
-              <h2 className="h4 text-choco">Equipo</h2>
+            <section className="mb-2" aria-labelledby="equipo-title">
+              <h2 id="equipo-title" className="h4 text-choco">Equipo</h2>
               <p className="mb-2">
                 Proyecto desarrollado por estudiantes de Ingeniería en Informática — Duoc UC, Sede San Joaquín (DSY1104).
               </p>
@@ -148,17 +150,17 @@ export default function Nosotros() {
               </ul>
             </section>
 
-            {/* FAQ opcional */}
-            <section className="mt-3">
-              <h2 className="h5 text-choco">Preguntas frecuentes</h2>
+            {/* FAQ */}
+            <section className="mt-3" aria-labelledby="faq-title">
+              <h2 id="faq-title" className="h5 text-choco">Preguntas frecuentes</h2>
               <Accordion className="mt-2">
-                <Accordion.Item eventKey="1">
+                <Accordion.Item eventKey="0">
                   <Accordion.Header>¿Hacen tortas personalizadas?</Accordion.Header>
                   <Accordion.Body className="text-muted">
                     Sí. Coordina sabores y decoración desde el catálogo; te guiaremos en todo el proceso.
                   </Accordion.Body>
                 </Accordion.Item>
-                <Accordion.Item eventKey="2">
+                <Accordion.Item eventKey="1">
                   <Accordion.Header>¿Tienen opciones veganas o sin gluten?</Accordion.Header>
                   <Accordion.Body className="text-muted">
                     Contamos con alternativas veganas y sin gluten, identificadas en el catálogo.
@@ -191,7 +193,7 @@ export default function Nosotros() {
                   className="btn btn-outline-choco btn-sm"
                   href="https://www.google.com/maps/search/?api=1&query=Pasteler%C3%ADa+1000+Sabores+Santiago+Chile"
                   target="_blank"
-                  rel="noreferrer"
+                  rel="noopener noreferrer"
                 >
                   Ver en Google Maps
                 </a>

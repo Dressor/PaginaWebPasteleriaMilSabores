@@ -57,13 +57,23 @@ body[data-theme='dark'] {
 }
 
 /* ===== base ===== */
-html, body { height: 100%; }
+html, body, #root { height: 100%; }
 body {
   background-color: var(--bg) !important;
   color: var(--text) !important;
   font-family: 'Lato', sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 * { transition: background-color .25s, color .25s, border-color .25s; }
+
+/* Respeto a usuarios que prefieren menos movimiento */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    transition: none !important;
+    scroll-behavior: auto !important;
+  }
+}
 
 /* tipografía marca */
 .brand-font { font-family: 'Pacifico', cursive; }
@@ -76,6 +86,12 @@ body {
   background-color: var(--surface-1) !important;
   color: var(--text) !important;
   border: 1px solid var(--border) !important;
+}
+
+/* Medios fluidos por si se insertan imágenes o videos */
+img, video {
+  max-width: 100%;
+  height: auto;
 }
 
 /* header de sección / hero */
@@ -198,8 +214,8 @@ body[data-theme='dark'] .bg-light p {
 body[data-theme='dark'] .bg-light {
   border: 1px solid rgba(230, 184, 156, 0.35) !important;
 }
+
 /* ==== NOSOTROS: forzar "Misión" y "Visión" a oscuro en dark ==== */
-/* Cubrimos bg-white, variantes claras y también inline styles con "background" */
 :root[data-theme='dark'] .bg-white,
 :root[data-bs-theme='dark'] .bg-white,
 body[data-theme='dark'] .bg-white,
@@ -209,7 +225,6 @@ body[data-theme='dark'] .bg-light-subtle,
 :root[data-theme='dark'] [style*="background"],
 :root[data-bs-theme='dark'] [style*="background"],
 body[data-theme='dark'] [style*="background"] {
-  /* fondo y borde homogéneos con el resto de tarjetas */
   background-color: var(--surface-1) !important;
   color: var(--text) !important;
   border: 1px solid var(--border) !important;
@@ -240,8 +255,8 @@ body[data-theme='dark'] .bg-light-subtle p,
 body[data-theme='dark'] [style*="background"] p {
   color: var(--text) !important;
 }
+
 /* ===== Chips legibles en ambas apariencias (claro y oscuro) ===== */
-/* Nuestro estilo "soft" con color de marca */
 .badge-soft {
   display: inline-block;
   padding: .4rem .65rem;
@@ -252,8 +267,6 @@ body[data-theme='dark'] [style*="background"] p {
   border: 1px solid color-mix(in srgb, var(--choco) 22%, transparent);
 }
 
-/* Si en algún lado quedó .badge .bg-light o .text-bg-light,
-   forzamos los mismos colores usados en badge-soft */
 .badge.bg-light,
 .badge.text-bg-light {
   background: color-mix(in srgb, var(--choco) 12%, transparent) !important;
@@ -261,8 +274,6 @@ body[data-theme='dark'] [style*="background"] p {
   border: 1px solid color-mix(in srgb, var(--choco) 22%, transparent) !important;
 }
 
-/* En modo oscuro, los mismos tokens ya se aclaran porque var(--choco) cambia;
-   reforzamos por si Bootstrap pisa variables internas */
 :root[data-theme='dark'] .badge-soft,
 :root[data-bs-theme='dark'] .badge-soft,
 body[data-theme='dark'] .badge-soft,
@@ -276,6 +287,7 @@ body[data-theme='dark'] .badge.text-bg-light {
   color: var(--choco) !important;
   border-color: color-mix(in srgb, var(--choco) 26%, transparent) !important;
 }
+
 /* ===== Mejor contraste de títulos en Hero (modo claro y oscuro) ===== */
 .hero-slide h1,
 .hero-slide .display-4,
@@ -284,21 +296,108 @@ body[data-theme='dark'] .badge.text-bg-light {
   text-shadow: 0 3px 12px rgba(0, 0, 0, 0.65);
   font-weight: 700;
 }
-
 .hero-slide p,
 .hero-slide .lead {
   color: #f5f5f5 !important;
   text-shadow: 0 2px 8px rgba(0, 0, 0, 0.6);
 }
-
 :root[data-theme='dark'] .hero-slide h1,
 :root[data-theme='dark'] .hero-slide .display-4,
 :root[data-theme='dark'] .hero-slide .display-5 {
   color: #ffe9d7 !important;
   text-shadow: 0 2px 6px rgba(0, 0, 0, 0.4);
 }
-
 :root[data-theme='dark'] .hero-slide p,
 :root[data-theme='dark'] .hero-slide .lead {
   color: #f2d6c7 !important;
+}
+
+/* Utilidades de truncado por si se usan en cards/listas */
+.text-truncate-2 {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.text-truncate-3 {
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+/* Botón contorno con color de marca */
+.btn-outline-choco {
+  background-color: transparent !important;
+  color: var(--choco) !important;
+  border: 1px solid color-mix(in srgb, var(--choco) 55%, transparent) !important;
+}
+.btn-outline-choco:hover,
+.btn-outline-choco:focus {
+  background-color: color-mix(in srgb, var(--choco) 12%, transparent) !important;
+  color: var(--section-title) !important;
+  border-color: color-mix(in srgb, var(--choco) 70%, transparent) !important;
+  box-shadow: var(--ring) !important;
+}
+/* Indicadores del carrusel con color de marca */
+.carousel-indicators [data-bs-target] {
+  background-color: color-mix(in srgb, var(--choco) 70%, white);
+}
+.carousel-indicators .active {
+  background-color: var(--choco);
+}
+
+/* Mayor contraste de los íconos prev/next en ambos temas */
+.carousel-control-prev-icon,
+.carousel-control-next-icon {
+  filter: drop-shadow(0 2px 4px rgba(0,0,0,.35));
+}
+:root[data-theme='dark'] .carousel-control-prev-icon,
+:root[data-bs-theme='dark'] .carousel-control-prev-icon,
+:root[data-theme='dark'] .carousel-control-next-icon,
+:root[data-bs-theme='dark'] .carousel-control-next-icon {
+  filter: invert(.85) drop-shadow(0 2px 4px rgba(0,0,0,.55));
+}
+/* ===== Timeline (Nosotros) ===== */
+.timeline {
+  list-style: none;
+  position: relative;
+  padding-left: 1.5rem;
+  margin: 0;
+}
+.timeline::before {
+  content: "";
+  position: absolute;
+  left: 0.55rem;
+  top: 0.25rem;
+  bottom: 0.25rem;
+  width: 2px;
+  background: var(--border);
+}
+.timeline li {
+  position: relative;
+  margin-bottom: 1rem;
+}
+.timeline-dot {
+  position: absolute;
+  left: 0.2rem;
+  top: 0.35rem;
+  width: 0.75rem;
+  height: 0.75rem;
+  background: var(--choco);
+  border-radius: 50%;
+  box-shadow: var(--shadow);
+}
+.timeline-content {
+  margin-left: 1rem;
+}
+
+/* ===== Value cards (Nosotros) ===== */
+.value-card {
+  background-color: var(--surface-1);
+  border-color: var(--border) !important;
+  transition: transform .15s ease, box-shadow .15s ease;
+}
+.value-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 18px rgba(0,0,0,.08);
 }

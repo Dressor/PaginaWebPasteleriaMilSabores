@@ -4,7 +4,6 @@ import React, { Suspense, lazy } from 'react';
 import { Route, Routes } from 'react-router-dom';
 import Layout from './components/Layout';
 import Spinner from './components/Spinner';
-import { AuthProvider } from './context/auth';
 import RequireAuth from './routes/RequireAuth';
 
 // Páginas (lazy)
@@ -22,41 +21,39 @@ const NotFound = lazy(() => import('./pages/NotFound'));
 
 export default function App() {
   return (
-    <AuthProvider>
-      <Suspense fallback={<Spinner />}>
-        <Routes>
-          <Route element={<Layout />}>
-            <Route path="/" element={<Home />} />
+    <Suspense fallback={<Spinner />}>
+      <Routes>
+        <Route element={<Layout />}>
+          <Route path="/" element={<Home />} />
 
-            {/* Catálogo */}
-            <Route path="/productos" element={<Productos />} />
-            <Route path="/producto/:code" element={<Producto />} />
+          {/* Catálogo */}
+          <Route path="/productos" element={<Productos />} />
+          <Route path="/producto/:code" element={<Producto />} />
 
-            {/* Blogs */}
-            <Route path="/blogs" element={<Blogs />} />
-            <Route path="/blog/50-anios" element={<Blog50Anios />} />
-            <Route path="/blog/tres-leches" element={<BlogTresLeches />} />
+          {/* Blogs */}
+          <Route path="/blogs" element={<Blogs />} />
+          <Route path="/blog/50-anios" element={<Blog50Anios />} />
+          <Route path="/blog/tres-leches" element={<BlogTresLeches />} />
 
-            {/* Nosotros (y alias de compatibilidad) */}
-            <Route path="/nosotros" element={<Nosotros />} />
-            <Route path="/propyState" element={<PropyState />} />
+          {/* Nosotros (y alias de compatibilidad) */}
+          <Route path="/nosotros" element={<Nosotros />} />
+          <Route path="/propyState" element={<PropyState />} />
 
-            {/* Login / Carrito */}
-            <Route path="/login" element={<Login />} />
-            <Route
-              path="/carrito"
-              element={
-                <RequireAuth>
-                  <Carrito />
-                </RequireAuth>
-              }
-            />
+          {/* Login / Carrito */}
+          <Route path="/login" element={<Login />} />
+          <Route
+            path="/carrito"
+            element={
+              <RequireAuth>
+                <Carrito />
+              </RequireAuth>
+            }
+          />
 
-            {/* 404 */}
-            <Route path="*" element={<NotFound />} />
-          </Route>
-        </Routes>
-      </Suspense>
-    </AuthProvider>
+          {/* 404 */}
+          <Route path="*" element={<NotFound />} />
+        </Route>
+      </Routes>
+    </Suspense>
   );
 }
