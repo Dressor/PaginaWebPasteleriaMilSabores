@@ -401,3 +401,88 @@ body[data-theme='dark'] .badge.text-bg-light {
   transform: translateY(-2px);
   box-shadow: 0 8px 18px rgba(0,0,0,.08);
 }
+/* Compacta la navbar */
+.navbar .navbar-brand img { height: 36px; width: auto; }
+.navbar .navbar-brand .brand-font { line-height: 1; }
+
+/* Input-group chico en navbar */
+.navbar .input-group-sm .form-control,
+.navbar .input-group-sm .btn { border-radius: .6rem !important; }
+
+/* Botones de la navbar con altura amable */
+.navbar .btn,
+.navbar .form-control { padding-top: .35rem; padding-bottom: .35rem; }
+/* Footer links más suaves */
+footer .link-secondary { opacity: .85; transition: opacity .2s; }
+footer .link-secondary:hover { opacity: 1; }
+/* Transiciones suaves para cambio de tema */
+* {
+  transition: background-color .25s ease, color .25s ease, border-color .25s ease;
+}
+
+/* Cuando estamos animando el cambio de tema, alarga y suma fill/stroke (SVG, iconos) */
+.theme-animating * {
+  transition: background-color .45s ease, color .45s ease, border-color .45s ease,
+              box-shadow .45s ease, fill .45s ease, stroke .45s ease !important;
+}
+
+/* Respeto a usuarios que prefieren menos movimiento */
+@media (prefers-reduced-motion: reduce) {
+  *, .theme-animating * { transition: none !important; }
+}
+/* === Transición de tema (fade-out / fade-in controlado) === */
+.theme-animating body {
+  transition: opacity .35s ease, filter .35s ease;
+  opacity: .55;              /* baja un poco la opacidad */
+  filter: saturate(.9);      /* toque suave para que no sea un “apagón” */
+}
+
+/* Asegura que también transicionen los colores cuando hay animación */
+.theme-animating * {
+  transition: background-color .45s ease, color .45s ease,
+              border-color .45s ease, box-shadow .45s ease !important;
+}
+
+/* Respeto por reduce-motion */
+@media (prefers-reduced-motion: reduce) {
+  .theme-animating body,
+  .theme-animating * { transition: none !important; }
+}
+/* === Transición de tema: fade del body === */
+body.theme-animating {
+  transition: opacity .35s ease, filter .35s ease;
+  opacity: .55;           /* leve atenuación */
+  filter: saturate(.9);   /* sin “apagón” brusco */
+}
+
+/* Mientras anima, suaviza cambios de los demás colores/bordes */
+body.theme-animating *, html.theme-animating * {
+  transition: background-color .45s ease, color .45s ease,
+              border-color .45s ease, box-shadow .45s ease !important;
+}
+
+/* Respeto por reduce motion */
+@media (prefers-reduced-motion: reduce) {
+  body.theme-animating,
+  body.theme-animating *, html.theme-animating * { transition: none !important; }
+}
+/* === Telón de transición de tema === */
+#theme-curtain {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity .32s ease, backdrop-filter .32s ease;
+  /* capa sutil que no “apaga” la pantalla: */
+  background: radial-gradient(120% 120% at 50% 50%, rgba(0,0,0,.06), rgba(0,0,0,.12));
+  backdrop-filter: saturate(0.95) brightness(0.98);
+  z-index: 2147483000; /* por encima de todo */
+}
+#theme-curtain.show {
+  opacity: 1;
+}
+
+/* Reduce motion: sin animación */
+@media (prefers-reduced-motion: reduce) {
+  #theme-curtain { transition: none !important; }
+}

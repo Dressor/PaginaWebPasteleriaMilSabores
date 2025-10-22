@@ -13,29 +13,28 @@ export default function Header() {
   const navigate = useNavigate();
 
   const handleLogout = () => {
-    logout();                        // limpia estado + localStorage
-    navigate('/', { replace: true }); // vuelve al Home y evita “atrás”
+    logout();
+    navigate('/', { replace: true });
   };
 
   return (
     <header>
-      {/* pastel-navbar viene de tu index.css. 
-         Sumamos clases Bootstrap base: navbar, navbar-expand-lg */}
-      <nav className="navbar navbar-expand-lg pastel-navbar border-bottom" aria-label="Barra de navegación principal">
-        {/* container para ancho legible; si quieres todo pegado a los bordes, cambia a container-fluid */}
-        <div className="container">
-          {/* BRAND (logo + texto) */}
+      <nav className="navbar navbar-expand-lg pastel-navbar border-bottom sticky-top" aria-label="Barra de navegación principal">
+        <div className="container-fluid">
+          {/* BRAND */}
           <Link to="/" className="navbar-brand d-flex align-items-center gap-2 text-decoration-none">
             <img
               src={logoPasteleria}
               alt="Logo Pastelería 1000 Sabores"
-              height={40}
+              height={36}
+              width={36}
+              loading="lazy"
               onError={(e) => { e.currentTarget.style.display = 'none'; }}
             />
-            <span className="brand-font text-choco">Pastelería 1000 Sabores</span>
+            <span className="brand-font text-choco fs-5 text-nowrap">Pastelería 1000 Sabores</span>
           </Link>
 
-          {/* Toggler mobile */}
+          {/* TOGGLER */}
           <button
             className="navbar-toggler"
             type="button"
@@ -48,32 +47,21 @@ export default function Header() {
             <span className="navbar-toggler-icon"></span>
           </button>
 
-          {/* Contenido colapsable */}
+          {/* CONTENIDO */}
           <div className="collapse navbar-collapse" id="navbarMain">
-            {/* Links a la izquierda */}
+            {/* IZQUIERDA: links */}
             <ul className="navbar-nav me-auto mb-2 mb-lg-0">
-              <li className="nav-item">
-                <NavLink end className={navClass} to="/">Inicio</NavLink>
-              </li>
-              <li className="nav-item">
-                <NavLink className={navClass} to="/productos">Productos</NavLink>
-              </li>
-              <li className="nav-item">
-                <NavLink className={navClass} to="/blogs">Blogs</NavLink>
-              </li>
-              <li className="nav-item">
-                <NavLink className={navClass} to="/nosotros">Nosotros</NavLink>
-              </li>
+              <li className="nav-item"><NavLink end className={navClass} to="/">Inicio</NavLink></li>
+              <li className="nav-item"><NavLink className={navClass} to="/productos">Productos</NavLink></li>
+              <li className="nav-item"><NavLink className={navClass} to="/blogs">Blogs</NavLink></li>
+              <li className="nav-item"><NavLink className={navClass} to="/nosotros">Nosotros</NavLink></li>
 
-              {/* Auth */}
               {!isAuthenticated ? (
                 <li className="nav-item">
                   <NavLink className={navClass} to="/login">Login</NavLink>
                 </li>
               ) : (
                 <li className="nav-item dropdown">
-                  {/* Botón estilo link para dropdown. 
-                     Con bundle de Bootstrap cargado, funciona out-of-the-box */}
                   <button
                     className="nav-link dropdown-toggle bg-transparent border-0"
                     id="userDropdown"
@@ -84,7 +72,6 @@ export default function Header() {
                     👋 {user?.username ?? 'Usuario'}
                   </button>
                   <ul className="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
-                    {/* Si en el futuro agregas /admin o /perfil, puedes añadir items aquí */}
                     <li>
                       <button className="dropdown-item text-danger" onClick={handleLogout}>
                         Cerrar sesión
@@ -95,25 +82,23 @@ export default function Header() {
               )}
             </ul>
 
-            {/* Derecha: buscador + tema + carrito */}
+            {/* DERECHA: buscador (chico), tema, carrito */}
             <div className="d-flex align-items-center gap-2">
-              {/* Buscador oculto en XS para no saturar la navbar */}
-              <form className="d-none d-md-flex" role="search" onSubmit={(e) => e.preventDefault()}>
-                <label htmlFor="navbarSearch" className="visually-hidden">Buscar</label>
-                <input
-                  id="navbarSearch"
-                  className="form-control me-2"
-                  type="search"
-                  placeholder="Buscar…"
-                  aria-label="Buscar productos o artículos"
-                />
-                <button className="btn btn-choco" type="submit">Buscar</button>
+              <form className="d-none d-md-block" role="search" onSubmit={(e) => e.preventDefault()}>
+                <div className="input-group input-group-sm">
+                  <label htmlFor="navbarSearch" className="visually-hidden">Buscar</label>
+                  <input
+                    id="navbarSearch"
+                    className="form-control"
+                    type="search"
+                    placeholder="Buscar…"
+                    aria-label="Buscar productos o artículos"
+                  />
+                  <button className="btn btn-outline-choco" type="submit">Buscar</button>
+                </div>
               </form>
 
-              {/* Toggle de tema (respeta tus variables CSS) */}
               <ThemeToggle />
-
-              {/* Badge del carrito (ícono + contador) */}
               <CartBadge />
             </div>
           </div>
