@@ -1,0 +1,313 @@
+/* ===== tokens base (claro) ===== */
+:root {
+  --bg: #fff8ee;
+  --text: #3e2b24;
+  --muted: #7a6a63;
+  --border: #e9d6c8;
+  --surface-1: #ffffff;
+  --surface-2: #fff2e6;
+  --overlay: rgba(0,0,0,.45);
+
+  --choco: #5a2c1e;
+  --rose: #fddede;
+  --cream: #fff7f0;
+
+  --shadow: 0 4px 12px rgba(0,0,0,.06);
+  --ring: 0 0 0 3px rgba(90,44,30,.18);
+
+  /* Bootstrap (modo claro) */
+  color-scheme: light;
+  --bs-body-bg: var(--bg);
+  --bs-body-color: var(--text);
+  --bs-card-bg: var(--surface-1);
+  --bs-card-color: var(--text);
+  --bs-border-color: var(--border);
+  --bs-heading-color: var(--text);
+  --bs-link-color: var(--choco);
+}
+
+/* ===== dark: aceptamos cualquiera de estos atributos ===== */
+:root[data-theme='dark'],
+:root[data-bs-theme='dark'],
+body[data-theme='dark'] {
+  --bg: #161314;
+  --text: #efe4dd;
+  --muted: #cbbfb9;
+  --border: #3a302b;
+  --surface-1: #211b1a;
+  --surface-2: #2a2220;
+  --overlay: rgba(0,0,0,.55);
+
+  --choco: #e6b89c;
+  --rose: #4a2f2c;
+  --cream: #1f1918;
+
+  --shadow: 0 6px 18px rgba(0,0,0,.4);
+  --ring: 0 0 0 3px rgba(230,184,156,.35);
+
+  /* Bootstrap (modo oscuro) */
+  color-scheme: dark;
+  --bs-body-bg: var(--bg);
+  --bs-body-color: var(--text);
+  --bs-card-bg: var(--surface-1);
+  --bs-card-color: var(--text);
+  --bs-border-color: var(--border);
+  --bs-heading-color: var(--text);
+  --bs-link-color: var(--choco);
+}
+
+/* ===== base ===== */
+html, body { height: 100%; }
+body {
+  background-color: var(--bg) !important;
+  color: var(--text) !important;
+  font-family: 'Lato', sans-serif;
+}
+* { transition: background-color .25s, color .25s, border-color .25s; }
+
+/* tipografía marca */
+.brand-font { font-family: 'Pacifico', cursive; }
+.text-choco { color: var(--choco) !important; }
+
+/* superficies */
+.navbar, .card, .form-control, .btn, .accordion-item {
+  border-radius: .75rem !important;
+  box-shadow: var(--shadow);
+  background-color: var(--surface-1) !important;
+  color: var(--text) !important;
+  border: 1px solid var(--border) !important;
+}
+
+/* header de sección / hero */
+.bg-rose-subtle, .section-header {
+  background: linear-gradient(180deg, var(--rose), var(--cream)) !important;
+  border: 1px solid var(--border) !important;
+  box-shadow: var(--shadow) !important;
+}
+:root[data-theme='dark'] .bg-rose-subtle,
+:root[data-bs-theme='dark'] .bg-rose-subtle,
+body[data-theme='dark'] .bg-rose-subtle,
+:root[data-theme='dark'] .section-header,
+:root[data-bs-theme='dark'] .section-header,
+body[data-theme='dark'] .section-header {
+  background: linear-gradient(180deg, #2b2321, #1c1716) !important;
+}
+
+/* contraste de títulos/subtítulos en headers */
+:root { --section-title: var(--choco); --section-subtitle: color-mix(in srgb, var(--text) 70%, white); }
+:root[data-theme='dark'],
+:root[data-bs-theme='dark'],
+body[data-theme='dark'] {
+  --section-title: #ffe9d7;
+  --section-subtitle: #e3d0c5;
+}
+.section-header h1,
+.section-header .brand-font,
+.bg-rose-subtle h1,
+.bg-rose-subtle .brand-font { color: var(--section-title) !important; }
+.section-header p,
+.section-header .text-muted,
+.bg-rose-subtle p,
+.bg-rose-subtle .text-muted { color: var(--section-subtitle) !important; }
+
+/* navbar */
+.pastel-navbar {
+  background-color: var(--surface-1) !important;
+  border-color: var(--border) !important;
+  box-shadow: var(--shadow) !important;
+}
+.pastel-navbar .navbar-brand { color: var(--section-title) !important; }
+.pastel-navbar .nav-link {
+  color: color-mix(in srgb, var(--text) 90%, transparent) !important;
+  opacity: .95;
+}
+.pastel-navbar .nav-link:hover,
+.pastel-navbar .nav-link:focus { color: var(--section-title) !important; opacity: 1; }
+.pastel-navbar .nav-link.active { color: var(--choco) !important; font-weight: 600; }
+.pastel-navbar .form-control {
+  background-color: var(--surface-1) !important;
+  color: var(--text) !important;
+  border-color: var(--border) !important;
+}
+.pastel-navbar .btn {
+  background-color: var(--surface-1) !important;
+  color: var(--text) !important;
+  border-color: var(--border) !important;
+}
+.pastel-navbar .btn:hover {
+  background-color: color-mix(in srgb, var(--choco) 16%, var(--surface-1)) !important;
+  color: var(--section-title) !important;
+}
+.navbar-toggler { border-color: var(--border) !important; }
+.navbar-toggler:focus { box-shadow: var(--ring) !important; }
+:root[data-theme='dark'] .navbar-toggler-icon,
+:root[data-bs-theme='dark'] .navbar-toggler-icon,
+body[data-theme='dark'] .navbar-toggler-icon { filter: invert(.85); }
+
+/* inputs / botones */
+.form-control:focus {
+  outline: none;
+  box-shadow: var(--ring) !important;
+  border-color: color-mix(in srgb, var(--choco) 35%, var(--border)) !important;
+}
+.btn-choco { background-color: var(--choco) !important; color: #fff !important; border: none !important; }
+.btn-choco:hover { filter: brightness(.92); }
+
+/* utilidades */
+.text-muted { color: var(--muted) !important; }
+.card-img-top { object-fit: cover; height: 220px; }
+
+/* toasts */
+.toast { border-radius: .6rem; font-weight: 500; }
+.toast.bg-success { background-color: #5a2c1e !important; }
+.toast.bg-warning { background-color: #d39e00 !important; }
+.toast.bg-danger  { background-color: #c9302c !important; }
+
+/* === Arreglo específico para los cuadros de Misión y Visión === */
+:root[data-theme='dark'] .card.bg-light,
+:root[data-bs-theme='dark'] .card.bg-light,
+body[data-theme='dark'] .card.bg-light {
+  background-color: var(--surface-1) !important;
+  color: var(--text) !important;
+  border-color: var(--border) !important;
+}
+
+/* Si usan solo bg-light sin card */
+:root[data-theme='dark'] .bg-light,
+:root[data-bs-theme='dark'] .bg-light,
+body[data-theme='dark'] .bg-light {
+  background-color: var(--surface-1) !important;
+  color: var(--text) !important;
+  border-color: var(--border) !important;
+}
+
+/* Refuerza los títulos y párrafos dentro */
+:root[data-theme='dark'] .bg-light h5,
+:root[data-bs-theme='dark'] .bg-light h5,
+body[data-theme='dark'] .bg-light h5 {
+  color: var(--section-title) !important;
+}
+
+:root[data-theme='dark'] .bg-light p,
+:root[data-bs-theme='dark'] .bg-light p,
+body[data-theme='dark'] .bg-light p {
+  color: var(--text) !important;
+}
+:root[data-theme='dark'] .bg-light,
+:root[data-bs-theme='dark'] .bg-light,
+body[data-theme='dark'] .bg-light {
+  border: 1px solid rgba(230, 184, 156, 0.35) !important;
+}
+/* ==== NOSOTROS: forzar "Misión" y "Visión" a oscuro en dark ==== */
+/* Cubrimos bg-white, variantes claras y también inline styles con "background" */
+:root[data-theme='dark'] .bg-white,
+:root[data-bs-theme='dark'] .bg-white,
+body[data-theme='dark'] .bg-white,
+:root[data-theme='dark'] .bg-light-subtle,
+:root[data-bs-theme='dark'] .bg-light-subtle,
+body[data-theme='dark'] .bg-light-subtle,
+/* Evitar afectar overlays y héroes que usan background inline (como el carrusel) */
+:root[data-theme='dark'] [style*="background"]:not(.hero-overlay),
+:root[data-bs-theme='dark'] [style*="background"]:not(.hero-overlay),
+body[data-theme='dark'] [style*="background"]:not(.hero-overlay) {
+  /* fondo y borde homogéneos con el resto de tarjetas */
+  background-color: var(--surface-1) !important;
+  color: var(--text) !important;
+  border: 1px solid var(--border) !important;
+  box-shadow: var(--shadow) !important;
+}
+
+/* títulos y párrafos dentro, para asegurar contraste */
+:root[data-theme='dark'] .bg-white h5,
+:root[data-bs-theme='dark'] .bg-white h5,
+body[data-theme='dark'] .bg-white h5,
+:root[data-theme='dark'] .bg-light-subtle h5,
+:root[data-bs-theme='dark'] .bg-light-subtle h5,
+body[data-theme='dark'] .bg-light-subtle h5,
+:root[data-theme='dark'] [style*="background"] h5,
+:root[data-bs-theme='dark'] [style*="background"] h5,
+body[data-theme='dark'] [style*="background"] h5 {
+  color: var(--section-title) !important;
+}
+
+:root[data-theme='dark'] .bg-white p,
+:root[data-bs-theme='dark'] .bg-white p,
+body[data-theme='dark'] .bg-white p,
+:root[data-theme='dark'] .bg-light-subtle p,
+:root[data-bs-theme='dark'] .bg-light-subtle p,
+body[data-theme='dark'] .bg-light-subtle p,
+:root[data-theme='dark'] [style*="background"] p,
+:root[data-bs-theme='dark'] [style*="background"] p,
+body[data-theme='dark'] [style*="background"] p {
+  color: var(--text) !important;
+}
+/* ===== Chips legibles en ambas apariencias (claro y oscuro) ===== */
+/* Nuestro estilo "soft" con color de marca */
+.badge-soft {
+  display: inline-block;
+  padding: .4rem .65rem;
+  border-radius: 999px;
+  font-weight: 600;
+  background: color-mix(in srgb, var(--choco) 12%, transparent);
+  color: var(--choco);
+  border: 1px solid color-mix(in srgb, var(--choco) 22%, transparent);
+}
+
+/* Si en algún lado quedó .badge .bg-light o .text-bg-light,
+   forzamos los mismos colores usados en badge-soft */
+.badge.bg-light,
+.badge.text-bg-light {
+  background: color-mix(in srgb, var(--choco) 12%, transparent) !important;
+  color: var(--choco) !important;
+  border: 1px solid color-mix(in srgb, var(--choco) 22%, transparent) !important;
+}
+
+/* En modo oscuro, los mismos tokens ya se aclaran porque var(--choco) cambia;
+   reforzamos por si Bootstrap pisa variables internas */
+:root[data-theme='dark'] .badge-soft,
+:root[data-bs-theme='dark'] .badge-soft,
+body[data-theme='dark'] .badge-soft,
+:root[data-theme='dark'] .badge.bg-light,
+:root[data-bs-theme='dark'] .badge.bg-light,
+body[data-theme='dark'] .badge.bg-light,
+:root[data-theme='dark'] .badge.text-bg-light,
+:root[data-bs-theme='dark'] .badge.text-bg-light,
+body[data-theme='dark'] .badge.text-bg-light {
+  background: color-mix(in srgb, var(--choco) 14%, transparent) !important;
+  color: var(--choco) !important;
+  border-color: color-mix(in srgb, var(--choco) 26%, transparent) !important;
+}
+/* === Corrección: en modo oscuro no opacar el overlay del Hero (carrusel principal) === */
+:root[data-theme='dark'] .hero-overlay,
+:root[data-bs-theme='dark'] .hero-overlay,
+body[data-theme='dark'] .hero-overlay {
+  background: rgba(0,0,0,.55) !important; /* mantener transparencia para ver la imagen */
+  border: none !important; /* sin bordes en el overlay */
+  box-shadow: none !important;
+}
+/* ===== Mejor contraste de títulos en Hero (modo claro y oscuro) ===== */
+.hero-slide h1,
+.hero-slide .display-4,
+.hero-slide .display-5 {
+  color: #ffffff !important;
+  text-shadow: 0 3px 12px rgba(0, 0, 0, 0.65);
+  font-weight: 700;
+}
+
+.hero-slide p,
+.hero-slide .lead {
+  color: #f5f5f5 !important;
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.6);
+}
+
+:root[data-theme='dark'] .hero-slide h1,
+:root[data-theme='dark'] .hero-slide .display-4,
+:root[data-theme='dark'] .hero-slide .display-5 {
+  color: #ffe9d7 !important;
+  text-shadow: 0 2px 6px rgba(0, 0, 0, 0.4);
+}
+
+:root[data-theme='dark'] .hero-slide p,
+:root[data-theme='dark'] .hero-slide .lead {
+  color: #f2d6c7 !important;
+}
