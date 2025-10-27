@@ -1,4 +1,10 @@
 // src/context/CartContext.js
+// Contexto que maneja el carrito de compras y cálculo de precios.
+// Comentarios: mantengo las funciones pequeñas y puras para facilitar tests.
+// - `fmtCLP` formatea números a moneda CLP.
+// - `CUPONES` es la lista de cupones disponibles (temporalmente en memoria).
+// - `cuponApplied` se usa para controlar que el cupón solo afecte el precio
+//    cuando el usuario lo haya aplicado explícitamente.
 import React, { createContext, useContext, useMemo, useState, useCallback } from 'react';
 
 /** ==== Utils ==== */
@@ -10,7 +16,10 @@ export function fmtCLP(n) {
   }
 }
 
-/** Base de cupones (opcional: mantenemos lo que ya tenías) */
+/** Base de cupones (opcional: mantenemos lo que ya tenías)
+ * Nota práctica: en una app real estos datos vendrían del backend o de un servicio
+ * y no quedarían hardcodeados en el cliente. Los dejo aquí por simplicidad.
+ */
 const CUPONES = {
   'SABOR10': { descuento: 0.10, expira: '2025-12-31' },
   'PASTEL15': { descuento: 0.15, expira: '2025-11-30' },
@@ -27,7 +36,7 @@ function validarCupon(codigo) {
 }
 
 /** Reglas de descuentos */
-function computeDiscounts(subtotal, fechaEntrega, cuponCodigo, { allowCupon = true } = {}) {
+function computeDiscounts(subtotal, fechaEntrega, cuponCodigo, { allowCupon = true, cuponApplied = true } = {}) {
   const descs = [];
   const entrega = fechaEntrega ? new Date(fechaEntrega) : null;
 
@@ -51,7 +60,7 @@ function computeDiscounts(subtotal, fechaEntrega, cuponCodigo, { allowCupon = tr
     descs.push({ key: 'aniversario', label: 'Aniversario tienda (20%)', amount: amt });
   }
 
-  const cupon = allowCupon ? validarCupon(cuponCodigo) : null;
+  const cupon = (allowCupon && cuponApplied) ? validarCupon(cuponCodigo) : null;
   if (cupon) {
     const amt = subtotal * cupon.descuento;
     descs.push({
@@ -64,9 +73,9 @@ function computeDiscounts(subtotal, fechaEntrega, cuponCodigo, { allowCupon = tr
   return descs;
 }
 
-function priceSummary(items, { fechaEntrega, cupon, allowCupon = true } = {}) {
+function priceSummary(items, { fechaEntrega, cupon, allowCupon = true, cuponApplied = true } = {}) {
   const subtotal = items.reduce((acc, it) => acc + (it.precio || 0) * (it.qty || 0), 0);
-  const descuentos = computeDiscounts(subtotal, fechaEntrega, cupon, { allowCupon });
+  const descuentos = computeDiscounts(subtotal, fechaEntrega, cupon, { allowCupon, cuponApplied });
   const totalDescuentos = descuentos.reduce((a, d) => a + d.amount, 0);
   const total = Math.max(subtotal - totalDescuentos, 0);
   return { subtotal, descuentos, total };
@@ -85,6 +94,7 @@ function CartProviderInner({ children }) {
   const [items, setItems] = useState([]);           // [{codigo, nombre, precio, stock, imagen, qty}]
   const [fechaEntrega, setFechaEntrega] = useState('');
   const [cupon, setCupon] = useState('');
+  const [cuponApplied, setCuponApplied] = useState(false);
   const [toasts, setToasts] = useState([]);        // [{id, message, variant}]
 
   /** Toasts */
@@ -167,12 +177,14 @@ function CartProviderInner({ children }) {
       fechaEntrega: opts.fechaEntrega ?? fechaEntrega,
       cupon: opts.cupon ?? cupon,
       allowCupon: opts.allowCupon ?? true,
+      cuponApplied: opts.cuponApplied ?? cuponApplied,
     };
     return priceSummary(items, merged);
-  }, [items, fechaEntrega, cupon]);
+  }, [items, fechaEntrega, cupon, cuponApplied]);
 
   const validarOrden = useCallback((opts = {}) => {
     const allowCupon = opts.allowCupon ?? true;
+    const cuponAplicado = opts.cuponApplied ?? cuponApplied;
     const errores = [];
     if (!fechaEntrega) {
       errores.push('Debes seleccionar una fecha de entrega.');
@@ -184,7 +196,8 @@ function CartProviderInner({ children }) {
       if (diffHrs < 24) errores.push('La entrega debe tener al menos 24 horas de anticipación.');
     }
     if (!items.length) errores.push('Tu carrito está vacío.');
-    if (cupon) {
+    // Solo validar el cupón cuando fue explícitamente aplicado
+    if (cupon && cuponAplicado) {
       if (!allowCupon) {
         errores.push('Debes iniciar sesión para usar cupones de descuento.');
       } else if (!CUPONES[cupon]) {
@@ -193,6 +206,12 @@ function CartProviderInner({ children }) {
     }
     return errores;
   }, [items, fechaEntrega, cupon]);
+
+  const applyCupon = useCallback((codigo) => {
+    const c = (codigo || '').toUpperCase();
+    setCupon(c);
+    setCuponApplied(!!c);
+  }, []);
 
   const value = useMemo(() => ({
     items,
@@ -204,7 +223,8 @@ function CartProviderInner({ children }) {
     fechaEntrega,
     setFechaEntrega,
     cupon,
-    setCupon,
+    cuponApplied,
+    applyCupon,
     getPricing,
     validarOrden,
     // toasts

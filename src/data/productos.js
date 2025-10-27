@@ -16,6 +16,15 @@ import browniesChocolate from '../assets/img/browniesChocolate.png';
 
 const productos = [
   {
+    codigo: 'personalizado',
+    nombre: 'Personaliza tu Torta',
+    categoria: 'Tortas',
+    descripcion: 'Elige tu sabor y diseño favorito.',
+    stock: 12,
+    precio: 15900,
+    imagen: pastelTresLeches,
+  },
+  {
     codigo: 'choco',
     nombre: 'Torta de Chocolate',
     categoria: 'Tortas',

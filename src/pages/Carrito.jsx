@@ -9,12 +9,14 @@ export default function Carrito() {
   const navigate = useNavigate();
   const {
     items, addToCart, removeFromCart, setQty, clearCart,
-    fmtCLP, fechaEntrega, setFechaEntrega, cupon, setCupon,
+    fmtCLP, fechaEntrega, setFechaEntrega, cupon, applyCupon,
     getPricing, validarOrden
   } = useCart();
   const { currentUser } = useAuth();
 
   const [cuponMsg, setCuponMsg] = useState('');
+  // Local input para el cupón: no actualiza el contexto hasta presionar "Aplicar"
+  const [cuponInput, setCuponInput] = useState(cupon || '');
   const [mensajeOk, setMensajeOk] = useState('');
   const [errores, setErrores] = useState([]);
 
@@ -33,13 +35,20 @@ export default function Carrito() {
       setCuponMsg('Debes iniciar sesión o registrarte para aplicar cupones.');
       return;
     }
-    if (!cupon) {
+    const code = (cuponInput || '').trim().toUpperCase();
+    if (!code) {
       setCuponMsg('Ingresa un código de cupón.');
       return;
     }
-    // La validación real se hace en el Context; acá solo damos feedback rápido
-    const ok = /^(SABOR10|PASTEL15|DUOC20)$/i.test(cupon);
-    setCuponMsg(ok ? '✅ Cupón aplicado con éxito.' : '❌ Cupón inválido o expirado.');
+    // Validación rápida en cliente antes de aplicar
+    const ok = /^(SABOR10|PASTEL15|DUOC20)$/i.test(code);
+    if (ok) {
+      applyCupon(code);
+      setCuponMsg('✅ Cupón aplicado con éxito.');
+    } else {
+      // No aplicamos el cupón inválido al contexto
+      setCuponMsg('❌ Cupón inválido o expirado.');
+    }
   };
 
   const onConfirmar = () => {
@@ -137,11 +146,18 @@ export default function Carrito() {
                 type="text"
                 className="form-control"
                 placeholder="Ej: SABOR10"
-                value={cupon}
-                onChange={(e) => setCupon((e.target.value || '').toUpperCase())}
+                value={cuponInput}
+                onChange={(e) => setCuponInput((e.target.value || '').toUpperCase())}
                 disabled={!currentUser}
               />
-              <button className="btn btn-outline-choco" onClick={onApplyCupon} disabled={!currentUser}>Aplicar</button>
+              <button
+                className="btn btn-outline-choco"
+                onClick={() => {
+                  // Al presionar Aplicar pasamos el valor al contexto mediante applyCupon
+                  onApplyCupon();
+                }}
+                disabled={!currentUser}
+              >Aplicar</button>
             </div>
             {(!currentUser) && (
               <div className="small mb-2">

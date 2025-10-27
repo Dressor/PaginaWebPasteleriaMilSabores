@@ -3,6 +3,7 @@ import React, { useEffect, useMemo, useState } from 'react';
 import { useCart } from '../context/CartContext';
 import { useAuth } from '../context/AuthContext';
 import { Link, useNavigate } from 'react-router-dom';
+import CheckoutLoading from '../components/CheckoutLoading';
 
 function luhnCheck(num) {
   const s = (num || '').replace(/\D/g, '');
@@ -57,6 +58,7 @@ export default function Checkout() {
   const [transferOk, setTransferOk] = useState(false);
   const [errores, setErrores] = useState([]);
   const [okMsg, setOkMsg] = useState('');
+  const [isProcessing, setIsProcessing] = useState(false);
 
   useEffect(() => {
     if (!items || items.length === 0) {
@@ -117,22 +119,23 @@ export default function Checkout() {
         saveOrder(orderData);
       }
 
-      if (metodo === 'tarjeta') {
-        // Simular redirección/éxito
-        setOkMsg('✅ Pago con tarjeta simulado con éxito. Redirigiendo...');
-      } else {
-        setOkMsg('✅ Transferencia confirmada. Redirigiendo...');
-      }
-      // Vaciar carrito y navegar a página de éxito
+      // Mostrar pantalla de procesamiento/validación antes de confirmar
+      setIsProcessing(true);
+      setOkMsg('Procesando pago...');
+      const PROCESSING_MS = 2500; // Duración simulada de la pasarela
+
       setTimeout(() => {
+        setIsProcessing(false);
+        // Vaciar carrito y navegar a página de éxito
         clearCart();
         navigate('/checkout/exito', { state: { order: orderData } });
-      }, 1800);
+      }, PROCESSING_MS);
     }
   };
 
   return (
     <div className="container py-4">
+      <CheckoutLoading visible={isProcessing} />
       <header className="section-header rounded mb-4">
         <div className="container py-3">
           <h1 className="brand-font text-choco mb-1">Checkout</h1>

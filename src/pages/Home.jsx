@@ -1,24 +1,26 @@
-// src/pages/Home.js
-import React, { useEffect, useMemo } from 'react';
+// src/pages/Home.jsx
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import HeroSlider from '../components/HeroSlider';
 import { Container, Row, Col, Card, Carousel, Button, Alert } from 'react-bootstrap';
 import productosData from '../data/productos';
 import { useCart } from '../context/CartContext';
 import { useAuth } from '../context/AuthContext';
+import { useNavigate } from 'react-router-dom';
 
 export default function Home() {
   const { addToCart, items } = useCart();
   const { currentUser } = useAuth();
+  const navigate = useNavigate();
+  const hoverTimer = useRef(null);
+  const [selected, setSelected] = useState(null);
   useEffect(() => { document.title = 'Inicio | Pastelería 1000 Sabores'; }, []);
 
-  // 1) Toma solo los destacados (o los primeros 9 si no hay flag)
   const productosDestacados = useMemo(() => {
     const conFlag = productosData.filter(p => p.destacado);
     const base = conFlag.length ? conFlag : productosData;
     return base.slice(0, 9);
   }, []);
 
-  // 2) Agrupa en chunks de 3 para cada slide del carrusel
   const productosEnGrupos = useMemo(() => {
     const size = 3;
     const grupos = [];
@@ -27,6 +29,20 @@ export default function Home() {
     }
     return grupos;
   }, [productosDestacados]);
+
+  // Selección/resaltado similar a Productos: seleccionar el primer producto al montar
+  useEffect(() => {
+    if (productosDestacados && productosDestacados.length) {
+      setSelected(productosDestacados[0].codigo);
+    } else {
+      setSelected(null);
+    }
+  }, [productosDestacados]);
+
+  // Nota sobre el carrusel: queremos que el carousel siga rotando aunque el usuario
+  // pase el mouse por encima (pause={false}). Decisión UX: la UI destaca la tarjeta
+  // con la clase `highlight` al hacer hover pero no detiene la rotación automática.
+  // Esto evita que el carrusel quede inmóvil cuando el usuario solo explora visualmente.
 
   return (
     <>
@@ -76,24 +92,31 @@ export default function Home() {
         </div>
       </section>
 
-      {/* 👉 Productos destacados con carrusel en grupos de 3 */}
       <main className="py-5">
         <Container>
           <h2 className="mb-4 brand-font text-choco">Productos destacados</h2>
 
-          <Carousel interval={7000} pause="hover">
+          <Carousel interval={7000} pause={false}>
             {productosEnGrupos.map((grupo, index) => (
               <Carousel.Item key={index}>
                 <Row className="g-4 p-3 p-sm-4 p-md-5">
                   {grupo.map((producto) => (
                     <Col md={4} key={producto.codigo}>
-                      <Card className="h-100 shadow-sm">
+                      <Card
+                        className={`h-100 product-card ${selected === producto.codigo ? 'highlight' : ''}`}
+                        onMouseEnter={() => setSelected(producto.codigo)}
+                        onClick={(e) => {
+                          const tag = e.target && (e.target.tagName || '').toLowerCase();
+                          if (tag === 'button' || tag === 'a' || (e.target.closest && e.target.closest('button, a'))) return;
+                          navigate(`/producto/${producto.codigo}`);
+                        }}
+                      >
                         <Card.Img
                           variant="top"
                           src={producto.imagen}
                           alt={producto.nombre}
-                          style={{ height: '200px', objectFit: 'cover' }}
                           onError={(e) => { e.currentTarget.src = '/assets/placeholder.jpg'; }}
+                          style={{ height: '200px', objectFit: 'cover', cursor: 'pointer' }}
                         />
                         <Card.Body>
                           <Card.Title className="fw-semibold">{producto.nombre}</Card.Title>
@@ -102,7 +125,7 @@ export default function Home() {
                           </Card.Text>
                           <Button 
                             className="btn-choco"
-                            onClick={() => addToCart(producto, 1)}
+                            onClick={(e) => { e.stopPropagation(); addToCart(producto, 1); }}
                           >
                             Agregar al carrito
                           </Button>

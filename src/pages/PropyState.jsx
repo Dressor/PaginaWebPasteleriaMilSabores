@@ -1,4 +1,4 @@
-// src/pages/PropyState.js
+// src/pages/PropyState.jsx
 import React from 'react';
 import Nosotros from './Nosotros';
 

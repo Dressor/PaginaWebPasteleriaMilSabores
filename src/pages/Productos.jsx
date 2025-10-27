@@ -1,5 +1,5 @@
 import React, { useMemo, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { Container, Row, Col, Card, Form, InputGroup, Button } from 'react-bootstrap';
 import { Helmet } from 'react-helmet';
 import productos from '../data/productos';
@@ -7,6 +7,8 @@ import SectionHeader from '../components/SectionHeader';
 import { useCart } from '../context/CartContext';
 import './Home.css';
 
+// Extrae categorías únicas desde el listado de productos.
+// Mantener la función fuera del componente evita recalcularla innecesariamente.
 function getCategorias() { return [...new Set(productos.map(p => p.categoria))]; }
 
 export default function Productos() {
@@ -27,6 +29,28 @@ export default function Productos() {
   }, [categoria, busqueda]);
 
   const qtyInCart = (codigo) => items.find(i => i.codigo === codigo)?.qty || 0;
+
+  const navigate = useNavigate();
+  // `selected` mantiene qué tarjeta está resaltada; útil para accesibilidad y UX.
+  // Se inicializa con el primer producto visible para dar foco visual.
+  const [selected, setSelected] = useState(null);
+
+  React.useEffect(() => {
+    if (listaFiltrada && listaFiltrada.length) {
+      setSelected(listaFiltrada[0].codigo);
+    } else {
+      setSelected(null);
+    }
+  }, [listaFiltrada]);
+
+  // Maneja clicks sobre la tarjeta: navegamos al detalle salvo que el click
+  // ocurra sobre un control interno (botón o enlace), en cuyo caso dejamos
+  // que el propio control maneje el evento.
+  const onCardClick = (e, producto) => {
+    const tag = e.target && (e.target.tagName || '').toLowerCase();
+    if (tag === 'button' || tag === 'a' || e.target.closest && e.target.closest('button, a')) return;
+    navigate(`/producto/${producto.codigo}`);
+  };
 
   return (
     <>
@@ -60,12 +84,16 @@ export default function Productos() {
         </Row>
 
         <Row className="g-4">
-          {listaFiltrada.map(producto => {
+          {listaFiltrada.map((producto, idx) => {
             const current = qtyInCart(producto.codigo);
             const atLimit = Number.isFinite(producto.stock) && current >= producto.stock;
             return (
               <Col md={4} key={producto.codigo}>
-                <Card className="h-100">
+                <Card
+                  className={`h-100 product-card ${selected === producto.codigo ? 'highlight' : ''}`}
+                  onClick={(e) => onCardClick(e, producto)}
+                  onMouseEnter={() => setSelected(producto.codigo)}
+                >
                   <Card.Img
                     variant="top"
                     src={producto.imagen}
@@ -81,10 +109,10 @@ export default function Productos() {
                         ${producto.precio.toLocaleString('es-CL')}
                       </strong>
                       <div className="d-flex gap-2">
-                        <Link to={`/producto/${producto.codigo}`} className="btn btn-outline-choco">Ver</Link>
+                        <Link to={`/producto/${producto.codigo}`} className="btn btn-outline-choco" onClick={(e) => e.stopPropagation()}>Ver</Link>
                         <Button
                           variant="light"
-                          onClick={() => addToCart(producto, 1)}
+                          onClick={(e) => { e.stopPropagation(); addToCart(producto, 1); }}
                           disabled={atLimit}
                         >
                           {atLimit ? 'Sin stock' : 'Agregar'}

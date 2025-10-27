@@ -70,4 +70,23 @@ main {
   padding-bottom: 3rem;
 }
 
+/* Estilos para tarjetas de producto (clickable + highlight) */
+.product-card {
+  cursor: pointer;
+  transition: transform 220ms ease, box-shadow 220ms ease, z-index 0.2s;
+}
+.product-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 8px 24px rgba(0,0,0,0.12);
+}
+.product-card.highlight {
+  transform: translateY(-10px);
+  box-shadow: 0 14px 36px rgba(0,0,0,0.18);
+  border: 2px solid rgba(139,69,19,0.08);
+  z-index: 5;
+}
+
+/* Asegurar que botones dentro de la card no muestren puntero de link global */
+.product-card .btn { cursor: pointer; }
+
 

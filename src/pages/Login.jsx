@@ -1,4 +1,4 @@
-// src/pages/Login.js
+// src/pages/Login.jsx
 import React, { useState, useEffect } from 'react';
 import { Helmet } from 'react-helmet';
 import { Link, useNavigate } from 'react-router-dom';
@@ -15,7 +15,6 @@ export default function Login() {
 
   useEffect(() => { document.title = 'Login | Pastelería 1000 Sabores'; }, []);
 
-  // Si ya está autenticado, redirigir al inicio
   useEffect(() => {
     if (currentUser) navigate('/');
   }, [currentUser, navigate]);
@@ -31,7 +30,6 @@ export default function Login() {
 
     try {
       await login(email, password);
-      // Redirigir al inicio después del login exitoso
       navigate('/');
     } catch (error) {
       setError('Email o contraseña incorrectos');

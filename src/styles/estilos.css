@@ -506,3 +506,25 @@ footer {
   font-weight: bold;
   transition: 0.3s;
 }
+
+/* Overlay de procesamiento para el checkout */
+.checkout-loading-overlay {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0,0,0,0.35);
+  z-index: 9999;
+  padding: 1rem;
+}
+.checkout-loading-card {
+  background: #fff;
+  color: #5D4037;
+  padding: 1.5rem 2rem;
+  border-radius: 12px;
+  box-shadow: 0 8px 30px rgba(0,0,0,0.2);
+  text-align: center;
+  max-width: 420px;
+  width: 100%;
+}
