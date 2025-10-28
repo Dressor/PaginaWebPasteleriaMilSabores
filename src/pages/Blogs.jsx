@@ -1,5 +1,6 @@
 // src/pages/Blogs.jsx
-import React from 'react';
+import React, { useMemo } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import { Helmet } from 'react-helmet';
 import { Link } from 'react-router-dom';
 import SectionHeader from '../components/SectionHeader';
@@ -11,6 +12,40 @@ import thumbTresLeches from '../assets/img/blog-tres-leches.jpeg';
 import thumbNoticias from '../assets/img/NoticiasGastronomia.png'; // ← imagen de la noticia
 
 export default function Blogs() {
+  const [searchParams] = useSearchParams();
+  const q = (searchParams.get('q') || '').trim().toLowerCase();
+
+  // Lista de posts como datos para poder filtrarlos por búsqueda
+  const posts = [
+    {
+      slug: '50-anios',
+      title: '50 años de dulzura',
+      desc: 'Cómo evolucionó la pastelería desde 1975 hasta hoy.',
+      thumb: thumb50,
+      to: '/blog/50-anios'
+    },
+    {
+      slug: 'tres-leches',
+      title: 'Receta: tres leches clásica',
+      desc: 'Tips para lograr el equilibrio perfecto entre esponja y crema.',
+      thumb: thumbTresLeches,
+      to: '/blog/tres-leches'
+    },
+    {
+      slug: 'noticias-gastronomia',
+      title: 'Noticias de Gastronomía',
+      desc: 'Lo último en tendencias culinarias, chefs y cultura gastronómica.',
+      thumb: thumbNoticias,
+      to: '#noticias-gastronomia'
+    }
+  ];
+
+  const filtered = useMemo(() => {
+    if (!q) return posts;
+    return posts.filter(p => (
+      p.title.toLowerCase().includes(q) || p.desc.toLowerCase().includes(q) || p.slug.includes(q)
+    ));
+  }, [q]);
   return (
     <>
       <Helmet>
@@ -32,69 +67,41 @@ export default function Blogs() {
       {/* 🧁 GRID DE BLOGS */}
       <main className="container py-4">
         <section className="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
-          {/* Post 1 */}
-          <article className="col">
-            <div className="card h-100 position-relative">
-              <Link to="/blog/50-anios" aria-label="Ir al artículo 50 años de dulzura">
-                <img
-                  className="card-img-top"
-                  src={thumb50}
-                  alt="Pastel con vela dorada: 50 años de dulzura"
-                  style={{ objectFit: 'cover', height: 220 }}
-                />
-              </Link>
-              <div className="card-body d-flex flex-column">
-                <h2 className="h5 card-title mb-1">50 años de dulzura</h2>
-                <p className="card-text">Cómo evolucionó la pastelería desde 1975 hasta hoy.</p>
-                <Link to="/blog/50-anios" className="stretched-link" aria-label="Leer más: 50 años de dulzura" />
-                <Link className="mt-auto btn btn-outline-choco" to="/blog/50-anios">Leer más</Link>
+              {filtered.map((post) => (
+                <article className="col" key={post.slug}>
+                  <div className="card h-100 position-relative product-card">
+                {post.to.startsWith('#') ? (
+                  <img
+                    className="card-img-top"
+                    src={post.thumb}
+                    alt={post.title}
+                    style={{ objectFit: 'cover', height: 220 }}
+                  />
+                ) : (
+                  <Link to={post.to} aria-label={`Ir al artículo ${post.title}`}>
+                    <img
+                      className="card-img-top"
+                      src={post.thumb}
+                      alt={post.title}
+                      style={{ objectFit: 'cover', height: 220 }}
+                    />
+                  </Link>
+                )}
+                <div className="card-body d-flex flex-column">
+                  <h2 className="h5 card-title mb-1">{post.title}</h2>
+                  <p className="card-text">{post.desc}</p>
+                  {post.to.startsWith('#') ? (
+                    <a className="mt-auto btn btn-outline-choco" href={post.to}>Ver noticias</a>
+                  ) : (
+                    <>
+                      <Link to={post.to} className="stretched-link" aria-label={`Leer más: ${post.title}`} />
+                      <Link className="mt-auto btn btn-outline-choco" to={post.to}>Leer más</Link>
+                    </>
+                  )}
+                </div>
               </div>
-            </div>
-          </article>
-
-          {/* Post 2 */}
-          <article className="col">
-            <div className="card h-100 position-relative">
-              <Link to="/blog/tres-leches" aria-label="Ir al artículo Receta: tres leches clásica">
-                <img
-                  className="card-img-top"
-                  src={thumbTresLeches}
-                  alt="Torta tres leches con crema: receta clásica"
-                  style={{ objectFit: 'cover', height: 220 }}
-                />
-              </Link>
-              <div className="card-body d-flex flex-column">
-                <h2 className="h5 card-title mb-1">Receta: tres leches clásica</h2>
-                <p className="card-text">Tips para lograr el equilibrio perfecto entre esponja y crema.</p>
-                <Link to="/blog/tres-leches" className="stretched-link" aria-label="Leer más: tres leches clásica" />
-                <Link className="mt-auto btn btn-outline-choco" to="/blog/tres-leches">Leer más</Link>
-              </div>
-            </div>
-          </article>
-
-          {/* Post 3 */}
-          <article className="col">
-            <div className="card h-100 position-relative">
-              <img
-                className="card-img-top"
-                src={thumbNoticias}
-                alt="Noticias de gastronomía"
-                style={{ objectFit: 'cover', height: 220 }}
-              />
-              <div className="card-body d-flex flex-column">
-                <h2 className="h5 card-title mb-1">Noticias de Gastronomía</h2>
-                <p className="card-text">
-                  Lo último en tendencias culinarias, chefs y cultura gastronómica.
-                </p>
-                <a
-                  className="mt-auto btn btn-outline-choco"
-                  href="#noticias-gastronomia"
-                >
-                  Ver noticias
-                </a>
-              </div>
-            </div>
-          </article>
+            </article>
+          ))}
         </section>
 
         {/* 🔽 SECCIÓN DE NOTICIAS INTEGRADA */}

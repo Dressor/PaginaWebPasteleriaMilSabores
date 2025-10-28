@@ -1,5 +1,5 @@
-import React, { useMemo, useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import React, { useMemo, useState, useEffect } from 'react';
+import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { Container, Row, Col, Card, Form, InputGroup, Button } from 'react-bootstrap';
 import { Helmet } from 'react-helmet';
 import productos from '../data/productos';
@@ -14,6 +14,15 @@ function getCategorias() { return [...new Set(productos.map(p => p.categoria))];
 export default function Productos() {
   const [categoria, setCategoria] = useState('');
   const [busqueda, setBusqueda] = useState('');
+  const [searchParams] = useSearchParams();
+
+  // Si llegamos a esta página con ?q=term desde el header, inicializamos
+  // el estado de búsqueda con ese valor para que la lista se filtre.
+  useEffect(() => {
+    const q = searchParams.get('q') || '';
+    if (q && q !== busqueda) setBusqueda(q);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [searchParams]);
   const { addToCart, items } = useCart();
 
   const listaFiltrada = useMemo(() => {

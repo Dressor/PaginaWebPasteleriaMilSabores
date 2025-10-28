@@ -12,6 +12,7 @@ import brazoGitano from '../assets/img/brazoGitano.png';
 import tiramisu from '../assets/img/tiramisu.png';
 import cupcakesRedVelvet from '../assets/img/cupcakesRedVelvet.png';
 import browniesChocolate from '../assets/img/browniesChocolate.png';
+import personalizaTuTorta from '../assets/img/personalizaTuTorta.png';
 
 
 const productos = [
@@ -22,7 +23,7 @@ const productos = [
     descripcion: 'Elige tu sabor y diseño favorito.',
     stock: 12,
     precio: 15900,
-    imagen: pastelTresLeches,
+    imagen: personalizaTuTorta                                      ,
   },
   {
     codigo: 'choco',

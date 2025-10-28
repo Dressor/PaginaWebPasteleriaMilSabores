@@ -153,6 +153,18 @@ body[data-theme='dark'] .navbar-toggler-icon { filter: invert(.85); }
 .btn-choco { background-color: var(--choco) !important; color: #fff !important; border: none !important; }
 .btn-choco:hover { filter: brightness(.92); }
 
+/* Efecto sobresaliente (lift + sombra) para todos los botones */
+.btn {
+  transition: transform 180ms ease, box-shadow 180ms ease;
+}
+.btn:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+}
+.btn:active {
+  transform: translateY(-2px) scale(0.995);
+}
+
 /* utilidades */
 .text-muted { color: var(--muted) !important; }
 .card-img-top { object-fit: cover; height: 220px; }

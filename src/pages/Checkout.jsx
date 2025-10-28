@@ -97,7 +97,7 @@ export default function Checkout() {
     if (errs.length === 0) {
       // Simulación de pasarela
       const orderData = {
-        id: `PMS-${Date.now().toString().slice(-8)}`,
+        id: `BOL-${Date.now().toString().slice(-8)}`,
         fecha: new Date().toLocaleDateString('es-CL'),
         hora: new Date().toLocaleTimeString('es-CL', { hour: '2-digit', minute: '2-digit' }),
         metodo: metodo === 'tarjeta' ? 'Tarjeta de crédito/débito' : 'Transferencia bancaria',

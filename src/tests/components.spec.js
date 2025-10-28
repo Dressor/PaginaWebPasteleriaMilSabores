@@ -3,7 +3,7 @@ import { render } from '@testing-library/react';
 import CheckoutLoading from '../components/CheckoutLoading';
 
 describe('Componentes simples', () => {
-  it('CheckoutLoading se renderiza cuando visible=true y no cuando false', () => {
+  it('CheckoutLoading se renderiza cuando visible =true y no cuando da false', () => {
     const { container: c1 } = render(<CheckoutLoading visible={true} message={'Procesando...'} />);
     // Debe contener el texto del mensaje
     expect(c1.textContent).toContain('Procesando');

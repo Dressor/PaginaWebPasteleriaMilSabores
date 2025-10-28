@@ -13,7 +13,7 @@ export default function CheckoutExito() {
       setOrderData(location.state.order);
     } else {
       // Si no hay datos, generar un orden simple
-      const orderId = `PMS-${Date.now().toString().slice(-8)}`;
+      const orderId = `BOL-${Date.now().toString().slice(-8)}`;
       setOrderData({
         id: orderId,
         fecha: new Date().toLocaleDateString('es-CL'),
