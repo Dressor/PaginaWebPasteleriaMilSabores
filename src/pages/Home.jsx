@@ -5,7 +5,7 @@ import { Container, Row, Col, Card, Carousel, Button, Alert } from 'react-bootst
 import productosData from '../data/productos';
 import { useCart } from '../context/CartContext';
 import { useAuth } from '../context/AuthContext';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 
 export default function Home() {
   const { addToCart, items } = useCart();
@@ -59,7 +59,7 @@ export default function Home() {
           <div className="mt-3">
             <Alert variant="light" className="d-flex align-items-center justify-content-between shadow-sm" style={{ border: '1px solid var(--border)' }}>
               <span className="me-3">¿Aún no tienes cuenta? Crea la tuya en segundos para un checkout más rápido.</span>
-              <a href="/registro" className="btn btn-choco">Registrarse</a>
+              <Link to="/registro" className="btn btn-choco">Registrarse</Link>
             </Alert>
           </div>
         )}
