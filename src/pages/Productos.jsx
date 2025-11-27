@@ -1,140 +1,104 @@
-import React, { useMemo, useState, useEffect } from 'react';
-import { Link, useNavigate, useSearchParams } from 'react-router-dom';
-import { Container, Row, Col, Card, Form, InputGroup, Button } from 'react-bootstrap';
-import { Helmet } from 'react-helmet';
-import productos from '../data/productos';
+import React, { useState, useEffect } from 'react';
+import { useParams, Link } from 'react-router-dom';
 import SectionHeader from '../components/SectionHeader';
 import { useCart } from '../context/CartContext';
+import { obtenerProductos } from '../services/productosService';
 import './Home.css';
 
-// Extrae categorías únicas desde el listado de productos.
-// Mantener la función fuera del componente evita recalcularla innecesariamente.
-function getCategorias() { return [...new Set(productos.map(p => p.categoria))]; }
-
-export default function Productos() {
-  const [categoria, setCategoria] = useState('');
-  const [busqueda, setBusqueda] = useState('');
-  const [searchParams] = useSearchParams();
-
-  // Si llegamos a esta página con ?q=term desde el header, inicializamos
-  // el estado de búsqueda con ese valor para que la lista se filtre.
-  useEffect(() => {
-    const q = searchParams.get('q') || '';
-    if (q && q !== busqueda) setBusqueda(q);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [searchParams]);
+export default function Producto() {
+  const { code } = useParams();
   const { addToCart, items } = useCart();
 
-  const listaFiltrada = useMemo(() => {
-    const q = busqueda.trim().toLowerCase();
-    return productos.filter(p => {
-      const matchCategoria = categoria ? p.categoria === categoria : true;
-      const matchTexto = q ? (
-        p.nombre?.toLowerCase().includes(q) ||
-        p.descripcion?.toLowerCase().includes(q)
-      ) : true;
-      return matchCategoria && matchTexto;
-    });
-  }, [categoria, busqueda]);
+  const [producto, setProducto] = useState(null);
+  const [loading, setLoading] = useState(true);
 
-  const qtyInCart = (codigo) => items.find(i => i.codigo === codigo)?.qty || 0;
+  // Estados para personalización
+  const [base, setBase] = useState('biscocho');
+  const [sabor, setSabor] = useState('chocolate');
+  const [personas, setPersonas] = useState(10);
 
-  const navigate = useNavigate();
-  // `selected` mantiene qué tarjeta está resaltada; útil para accesibilidad y UX.
-  // Se inicializa con el primer producto visible para dar foco visual.
-  const [selected, setSelected] = useState(null);
-
-  React.useEffect(() => {
-    if (listaFiltrada && listaFiltrada.length) {
-      setSelected(listaFiltrada[0].codigo);
-    } else {
-      setSelected(null);
-    }
-  }, [listaFiltrada]);
-
-  // Maneja clicks sobre la tarjeta: navegamos al detalle salvo que el click
-  // ocurra sobre un control interno (botón o enlace), en cuyo caso dejamos
-  // que el propio control maneje el evento.
-  const onCardClick = (e, producto) => {
-    const tag = e.target && (e.target.tagName || '').toLowerCase();
-    if (tag === 'button' || tag === 'a' || e.target.closest && e.target.closest('button, a')) return;
-    navigate(`/producto/${producto.codigo}`);
+  const PERSONAL_PRICES = {
+    10: 15990,
+    15: 20990,
+    20: 25990,
   };
+
+  // 🔥 CARGAR PRODUCTOS DESDE EL BACKEND
+  useEffect(() => {
+    obtenerProductos().then(data => {
+      const encontrado = data.find(p => p.codigo === code);
+      setProducto(encontrado || null);
+      setLoading(false);
+    });
+  }, [code]);
+
+  if (loading) {
+    return <p className="container py-4">Cargando producto...</p>;
+  }
+
+  if (!producto) {
+    return (
+      <main className="container py-4">
+        <div className="alert alert-warning">
+          Producto no encontrado. <Link to="/productos" className="alert-link">Volver al listado</Link>.
+        </div>
+      </main>
+    );
+  }
+
+  const current = items.find(i => i.codigo === producto.codigo)?.qty || 0;
+  const atLimit = Number.isFinite(producto.stock) && current >= producto.stock;
 
   return (
     <>
-      <Helmet><title>Productos | Pastelería 1000 Sabores</title></Helmet>
-
       <SectionHeader
-        title="Nuestros productos"
-        subtitle="Tortas, postres y repostería artesanal hechos con amor."
+        title={producto.nombre}
+        subtitle="Detalle del producto seleccionado."
       />
 
-      <Container className="py-4">
-        <Row className="g-3 align-items-end mb-4">
-          <Col md={4}>
-            <Form.Label className="mb-1">Categoría</Form.Label>
-            <Form.Select value={categoria} onChange={e => setCategoria(e.target.value)}>
-              <option value="">Todas</option>
-              {getCategorias().map(cat => <option key={cat} value={cat}>{cat}</option>)}
-            </Form.Select>
-          </Col>
-          <Col md={8}>
-            <Form.Label className="mb-1">Búsqueda</Form.Label>
-            <InputGroup>
-              <Form.Control
-                placeholder="Busca por nombre o descripción..."
-                value={busqueda}
-                onChange={e => setBusqueda(e.target.value)}
-              />
-              <Button variant="outline-secondary" onClick={() => setBusqueda('')}>Limpiar</Button>
-            </InputGroup>
-          </Col>
-        </Row>
+      <main className="container py-4">
+        <div className="row g-4">
+          <div className="col-12 col-md-6">
+            <div className="ratio ratio-4x3 bg-light rounded shadow-sm d-flex align-items-center justify-content-center">
+              {producto.archivoImagenId ? (
+                <img
+                  src={`http://localhost:8082/api/v1/archivos/${producto.archivoImagenId}`}
+                  alt={producto.nombre}
+                  className="img-fluid rounded"
+                  style={{ maxHeight: '100%', maxWidth: '100%', objectFit: 'cover' }}
+                />
+              ) : (
+                <span className="text-muted">Sin imagen</span>
+              )}
+            </div>
+          </div>
 
-        <Row className="g-4">
-          {listaFiltrada.map((producto, idx) => {
-            const current = qtyInCart(producto.codigo);
-            const atLimit = Number.isFinite(producto.stock) && current >= producto.stock;
-            return (
-              <Col md={4} key={producto.codigo}>
-                <Card
-                  className={`h-100 product-card ${selected === producto.codigo ? 'highlight' : ''}`}
-                  onClick={(e) => onCardClick(e, producto)}
-                  onMouseEnter={() => setSelected(producto.codigo)}
-                >
-                  <Card.Img
-                    variant="top"
-                    src={producto.imagen}
-                    alt={producto.nombre}
-                    style={{ height: 220, objectFit: 'cover' }}
-                  />
-                  <Card.Body className="d-flex flex-column">
-                    <Card.Title>{producto.nombre}</Card.Title>
-                    <Card.Text className="text-muted">{producto.categoria}</Card.Text>
-                    <Card.Text className="flex-grow-1">{producto.descripcion}</Card.Text>
-                    <div className="d-flex justify-content-between align-items-center mt-3">
-                      <strong className="text-choco">
-                        ${producto.precio.toLocaleString('es-CL')}
-                      </strong>
-                      <div className="d-flex gap-2">
-                        <Link to={`/producto/${producto.codigo}`} className="btn btn-outline-choco" onClick={(e) => e.stopPropagation()}>Ver</Link>
-                        <Button
-                          variant="light"
-                          onClick={(e) => { e.stopPropagation(); addToCart(producto, 1); }}
-                          disabled={atLimit}
-                        >
-                          {atLimit ? 'Sin stock' : 'Agregar'}
-                        </Button>
-                      </div>
-                    </div>
-                  </Card.Body>
-                </Card>
-              </Col>
-            );
-          })}
-        </Row>
-      </Container>
+          <div className="col-12 col-md-6">
+            <h2 className="mb-1">{producto.nombre}</h2>
+            <p className="text-muted">{producto.categoria}</p>
+            <p>{producto.descripcion}</p>
+            <p><strong>Stock:</strong> {Number.isFinite(producto.stock) ? producto.stock : '—'} unidades</p>
+
+            <div className="d-flex align-items-center gap-3">
+              <strong className="fs-4 text-choco">
+                ${producto.precio.toLocaleString('es-CL')}
+              </strong>
+
+              <button
+                className="btn btn-choco"
+                onClick={() => addToCart(producto, 1)}
+                disabled={atLimit}
+              >
+                {atLimit ? 'Sin stock' : 'Añadir al carrito'}
+              </button>
+            </div>
+
+            <div className="mt-3">
+              <Link to="/productos" className="btn btn-outline-choco">Volver</Link>
+            </div>
+          </div>
+        </div>
+      </main>
     </>
   );
 }

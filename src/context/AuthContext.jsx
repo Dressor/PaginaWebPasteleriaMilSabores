@@ -1,112 +1,46 @@
 // src/context/AuthContext.jsx
-import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
+import React, { createContext, useState, useEffect, useContext } from "react";
+import { loginUser, fetchCurrentUser } from "../services/authService";
 
 const AuthContext = createContext(null);
 
-// Claves para almacenar usuarios en sessionStorage
-const USERS_STORAGE_KEY = 'registered_users';
-const CURRENT_USER_KEY = 'current_user';
-
 export function AuthProvider({ children }) {
   const [currentUser, setCurrentUser] = useState(null);
-  const [isLoading, setIsLoading] = useState(true);
+  const [loading, setLoading] = useState(true);
 
-  // Cargar usuario actual al iniciar
+  // cargar usuario desde sessionStorage
   useEffect(() => {
-    const savedUser = sessionStorage.getItem(CURRENT_USER_KEY);
-    if (savedUser) {
-      setCurrentUser(JSON.parse(savedUser));
+    const token = sessionStorage.getItem("accessToken");
+    if (!token) {
+      setLoading(false);
+      return;
     }
-    setIsLoading(false);
+
+    fetchCurrentUser(token)
+      .then((user) => setCurrentUser(user))
+      .catch(() => sessionStorage.removeItem("accessToken"))
+      .finally(() => setLoading(false));
   }, []);
 
-  // Registrar un nuevo usuario
-  const register = (userData) => {
-  // Obtener usuarios existentes (persisten entre cierres del navegador)
-  const existingUsers = JSON.parse(localStorage.getItem(USERS_STORAGE_KEY) || '[]');
-    
-    // Verificar si el email ya está registrado
-    if (existingUsers.some(user => user.email === userData.email)) {
-      throw new Error('Este correo electrónico ya está registrado');
-    }
-
-    // Crear nuevo usuario con fecha de registro
-    const newUser = {
-      ...userData,
-      id: Date.now().toString(),
-      registeredAt: new Date().toISOString()
-    };
-
-    // Agregar a la lista y guardar
-    const updatedUsers = [...existingUsers, newUser];
-  localStorage.setItem(USERS_STORAGE_KEY, JSON.stringify(updatedUsers));
-
-    return newUser;
+  // login REAL
+  const login = async (email, password) => {
+    const res = await loginUser(email, password);
+    sessionStorage.setItem("accessToken", res.accessToken);
+    const user = await fetchCurrentUser(res.accessToken);
+    setCurrentUser(user);
+    return user;
   };
 
-  // Iniciar sesión
-  const login = (email, password) => {
-  const users = JSON.parse(localStorage.getItem(USERS_STORAGE_KEY) || '[]');
-    const user = users.find(u => u.email === email && u.password === password);
-    
-    if (!user) {
-      throw new Error('Credenciales inválidas');
-    }
-
-    // Guardar usuario actual y actualizar estado
-    const userWithoutPassword = { ...user, password: undefined };
-  sessionStorage.setItem(CURRENT_USER_KEY, JSON.stringify(userWithoutPassword));
-    setCurrentUser(userWithoutPassword);
-
-    return userWithoutPassword;
-  };
-
-  // Cerrar sesión
   const logout = () => {
-    sessionStorage.removeItem(CURRENT_USER_KEY);
+    sessionStorage.removeItem("accessToken");
     setCurrentUser(null);
   };
 
-  // Obtener pedidos del usuario actual
-  const getUserOrders = useCallback(() => {
-    if (!currentUser?.email) return [];
-    const allOrders = JSON.parse(localStorage.getItem('user_orders') || '{}');
-    return allOrders[currentUser.email] || [];
-  }, [currentUser]);
-
-  // Guardar un pedido para el usuario actual
-  const saveOrder = useCallback((orderData) => {
-    if (!currentUser?.email) return;
-    const allOrders = JSON.parse(localStorage.getItem('user_orders') || '{}');
-    if (!allOrders[currentUser.email]) {
-      allOrders[currentUser.email] = [];
-    }
-    allOrders[currentUser.email].unshift(orderData); // Agregar al inicio
-    localStorage.setItem('user_orders', JSON.stringify(allOrders));
-  }, [currentUser]);
-
-  const value = {
-    currentUser,
-    isLoading,
-    register,
-    login,
-    logout,
-    getUserOrders,
-    saveOrder
-  };
-
   return (
-    <AuthContext.Provider value={value}>
-      {!isLoading && children}
+    <AuthContext.Provider value={{ currentUser, loading, login, logout }}>
+      {!loading && children}
     </AuthContext.Provider>
   );
 }
 
-// Hook personalizado para usar el contexto
-export const useAuth = () => {
-  const context = useContext(AuthContext);
-  if (!context) {
-    throw new Error('useAuth debe usarse dentro de AuthProvider');
-  }
-  return context;
-};
+export const useAuth = () => useContext(AuthContext);
