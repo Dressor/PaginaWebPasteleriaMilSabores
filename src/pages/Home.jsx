@@ -5,7 +5,7 @@ import { Container, Row, Col, Card, Carousel, Button, Alert } from 'react-bootst
 import { obtenerProductos } from "../services/productosService";
 import { useCart } from '../context/CartContext';
 import { useAuth } from '../context/AuthContext';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 
 export default function Home() {
   const { addToCart } = useCart();
@@ -54,10 +54,12 @@ export default function Home() {
         </p>
 
         {!currentUser && (
-          <Alert variant="light" className="d-flex justify-content-between mt-3 shadow-sm">
-            <span>¿Aún no tienes cuenta? Regístrate en segundos.</span>
-            <a href="/registro" className="btn btn-choco">Registrarse</a>
-          </Alert>
+          <div className="mt-3">
+            <Alert variant="light" className="d-flex align-items-center justify-content-between shadow-sm" style={{ border: '1px solid var(--border)' }}>
+              <span className="me-3">¿Aún no tienes cuenta? Crea la tuya en segundos para un checkout más rápido.</span>
+              <a href="/registro" className="btn btn-choco">Registrarse</a>
+            </Alert>
+          </div>
         )}
       </section>
 

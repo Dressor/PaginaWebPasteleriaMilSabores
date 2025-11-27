@@ -58,14 +58,14 @@ describe('AuthContext - registro, login y logout', () => {
 
   it('login con credenciales válidas guarda current_user en sessionStorage y devuelve user sin password', async () => {
     // Crear usuario en localStorage
-    const u = { id: '1', nombre: 'Login', email: 'login@t.com', password: 'pw' };
+    const u = { id: '1', nombre: 'Login', email: 'login@t.com', password: 'pWjji' };
     localStorage.setItem('registered_users', JSON.stringify([u]));
 
     render(
       <AuthProvider>
         <AuthTester cb={(auth) => {
           // Ejecutar login desde el callback
-          auth.login('login@t.com', 'pw');
+          auth.login('login@t.com', 'pWjji');
         }} />
       </AuthProvider>
     );

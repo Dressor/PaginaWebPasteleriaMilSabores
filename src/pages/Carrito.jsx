@@ -25,7 +25,6 @@ export default function Carrito() {
   // Si el usuario no está logueado y hay un cupón escrito, opcional: mantener pero avisar
   useEffect(() => {
     if (!currentUser && cupon) {
-      // No lo borramos automáticamente, solo informamos vía mensaje si intenta aplicar/confirmar
       setCuponMsg('Los cupones requieren iniciar sesión. Puedes seguir como invitado sin descuento.');
     }
   }, [currentUser]);

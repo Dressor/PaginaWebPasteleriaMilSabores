@@ -14,45 +14,33 @@ export default function Header() {
   const navigate = useNavigate();
   const [searchTerm, setSearchTerm] = useState('');
   const [suggestions, setSuggestions] = useState([]);
-
-  // Sincronizar el input del header con ?q= en la URL cuando la ruta cambie.
-  // Esto permite que al navegar desde Header -> Productos (o al abrir /productos?q=...)
-  // el input muestre el término buscado.
   const location = useLocation();
+
   useEffect(() => {
     try {
       const params = new URLSearchParams(location.search);
       const q = params.get('q') || '';
-      // Actualizamos sólo cuando la query cambió desde la URL (no mientras se escribe)
       if (q !== searchTerm) setSearchTerm(q);
-    } catch (err) {
-      // no hagas nada si URLSearchParams falla
-    }
+    } catch (err) { /* ignore */ }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [location.search]);
+
   const { currentUser, logout } = useAuth();
   const [showLogoutMsg, setShowLogoutMsg] = useState(false);
   const [fadeLogout, setFadeLogout] = useState(false);
 
   const handleLogout = () => {
-    try {
-      logout();
-    } catch (err) {
-      // ignore
-    }
-    // Mostrar mensaje centrado, con entrada suave y luego desvanecer
+    try { logout(); } catch (err) {}
     setFadeLogout(false);
     setShowLogoutMsg(true);
-    // Después de 1.5s comenzamos fade-out
     setTimeout(() => setFadeLogout(true), 1500);
-    // Tras el fade completado navegamos y (opcional) recargamos
     setTimeout(() => {
       setShowLogoutMsg(false);
       setFadeLogout(false);
       try { navigate('/'); } catch (e) {}
-      try { window.location.reload(); } catch (e) {}
     }, 1850);
   };
+
   return (
     <header>
       <nav className="navbar navbar-expand-lg pastel-navbar border-bottom">
@@ -107,7 +95,6 @@ export default function Header() {
                   e.preventDefault();
                   const q = (searchTerm || '').trim();
                   if (!q) return;
-                  // Heurística simple: si el término sugiere recetas/blogs, vamos a /blogs
                   const blogKeywords = /(receta|recetas|blog|noticia|noticias)/i;
                   if (blogKeywords.test(q)) {
                     navigate(`/blogs?q=${encodeURIComponent(q)}`);
@@ -117,62 +104,60 @@ export default function Header() {
                 }}
               >
                 <div style={{ position: 'relative' }}>
-                <input
-                  className="form-control me-2"
-                  type="search"
-                  placeholder="Buscar..."
-                  aria-label="Buscar"
-                  value={searchTerm}
-                  onChange={(e) => {
-                    const v = e.target.value;
-                    setSearchTerm(v);
-                    const q = (v || '').trim().toLowerCase();
-                    if (!q) return setSuggestions([]);
-                    // Buscar en productos por nombre, categoria o descripcion
-                    const matches = productos.filter(p => (
-                      p.nombre?.toLowerCase().includes(q) ||
-                      p.categoria?.toLowerCase().includes(q) ||
-                      p.descripcion?.toLowerCase().includes(q)
-                    )).slice(0, 6);
-                    setSuggestions(matches);
-                  }}
-                  onFocus={() => {
-                    if (searchTerm) {
-                      const q = searchTerm.trim().toLowerCase();
+                  <input
+                    className="form-control me-2"
+                    type="search"
+                    placeholder="Buscar..."
+                    aria-label="Buscar"
+                    value={searchTerm}
+                    onChange={(e) => {
+                      const v = e.target.value;
+                      setSearchTerm(v);
+                      const q = (v || '').trim().toLowerCase();
+                      if (!q) return setSuggestions([]);
                       const matches = productos.filter(p => (
                         p.nombre?.toLowerCase().includes(q) ||
                         p.categoria?.toLowerCase().includes(q) ||
                         p.descripcion?.toLowerCase().includes(q)
                       )).slice(0, 6);
                       setSuggestions(matches);
-                    }
-                  }}
-                  onBlur={() => {
-                    // cerramos el dropdown con un pequeño delay para permitir clicks
-                    setTimeout(() => setSuggestions([]), 150);
-                  }}
-                />
-                {suggestions && suggestions.length > 0 && (
-                  <ul className="list-group position-absolute" style={{ zIndex: 1050, width: '100%', top: '40px' }}>
-                    {suggestions.map(s => (
-                      <li key={s.codigo} className="list-group-item list-group-item-action p-2">
-                        <RouterLink
-                          to={`/producto/${s.codigo}`}
-                          onMouseDown={(e) => e.preventDefault()} // evitar blur antes del click
-                          className="text-decoration-none text-dark d-block"
-                        >
-                          <small className="text-muted">{s.categoria}</small>
-                          <div><strong>{s.nombre}</strong></div>
+                    }}
+                    onFocus={() => {
+                      if (searchTerm) {
+                        const q = searchTerm.trim().toLowerCase();
+                        const matches = productos.filter(p => (
+                          p.nombre?.toLowerCase().includes(q) ||
+                          p.categoria?.toLowerCase().includes(q) ||
+                          p.descripcion?.toLowerCase().includes(q)
+                        )).slice(0, 6);
+                        setSuggestions(matches);
+                      }
+                    }}
+                    onBlur={() => {
+                      setTimeout(() => setSuggestions([]), 150);
+                    }}
+                  />
+                  {suggestions && suggestions.length > 0 && (
+                    <ul className="list-group position-absolute" style={{ zIndex: 1050, width: '100%', top: '40px' }}>
+                      {suggestions.map(s => (
+                        <li key={s.codigo} className="list-group-item list-group-item-action p-2">
+                          <RouterLink
+                            to={`/producto/${s.codigo}`}
+                            onMouseDown={(e) => e.preventDefault()}
+                            className="text-decoration-none text-dark d-block"
+                          >
+                            <small className="text-muted">{s.categoria}</small>
+                            <div><strong>{s.nombre}</strong></div>
+                          </RouterLink>
+                        </li>
+                      ))}
+                      <li className="list-group-item p-2">
+                        <RouterLink to={`/productos?q=${encodeURIComponent(searchTerm)}`} onMouseDown={(e) => e.preventDefault()} className="text-decoration-none">
+                          Ver todos los resultados para "{searchTerm}"
                         </RouterLink>
                       </li>
-                    ))}
-                    <li className="list-group-item p-2">
-                      <RouterLink to={`/productos?q=${encodeURIComponent(searchTerm)}`} onMouseDown={(e) => e.preventDefault()} className="text-decoration-none">
-                        Ver todos los resultados para "{searchTerm}"
-                      </RouterLink>
-                    </li>
-                  </ul>
-                )}
+                    </ul>
+                  )}
                 </div>
                 <button className="btn btn-buscar" type="submit">Buscar</button>
               </form>
