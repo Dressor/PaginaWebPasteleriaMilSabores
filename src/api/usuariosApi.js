@@ -11,7 +11,8 @@ const usuariosApi = axios.create({
 
 // Interceptor para añadir Authorization si hay token en sessionStorage
 usuariosApi.interceptors.request.use(config => {
-  const token = sessionStorage.getItem("auth_token");
+  // Usar la llave unificada `accessToken`. Mantener fallback a `auth_token` por compatibilidad.
+  const token = sessionStorage.getItem("accessToken") || sessionStorage.getItem("auth_token");
   if (token) {
     config.headers = config.headers || {};
     config.headers.Authorization = `Bearer ${token}`;

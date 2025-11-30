@@ -25,7 +25,7 @@ export default function Header() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [location.search]);
 
-  const { currentUser, logout } = useAuth();
+  const { currentUser, logout, isAdmin } = useAuth();
   const [showLogoutMsg, setShowLogoutMsg] = useState(false);
   const [fadeLogout, setFadeLogout] = useState(false);
 
@@ -78,6 +78,9 @@ export default function Header() {
               <li className="nav-item"><NavLink className={navClass} to="/nosotros">Nosotros</NavLink></li>
               {currentUser && (
                 <li className="nav-item"><NavLink className={navClass} to="/mis-pedidos">Mis Pedidos</NavLink></li>
+              )}
+              {isAdmin && (
+                <li className="nav-item"><NavLink className={navClass} to="/admin/productos">Admin</NavLink></li>
               )}
               {!currentUser && (
                 <>
