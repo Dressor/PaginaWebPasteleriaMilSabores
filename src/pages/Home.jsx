@@ -23,6 +23,7 @@ export default function Home() {
   }, []);
 
   const productosDestacados = useMemo(() => {
+    // Si tienes una propiedad 'destacado', úsala. Si no, mostramos todos.
     const conFlag = productos.filter(p => p.destacado);
     const base = conFlag.length ? conFlag : productos;
     return base.slice(0, 9);
@@ -72,30 +73,43 @@ export default function Home() {
               <Carousel.Item key={index}>
                 <Row className="g-4 p-3 p-sm-4 p-md-5">
                   {grupo.map((producto) => (
-                    <Col md={4} key={producto.codigo}>
+                    <Col md={4} key={producto.id || producto.codigo}>
                       <Card
                         className={`h-100 product-card ${selected === producto.codigo ? 'highlight' : ''}`}
                         onMouseEnter={() => setSelected(producto.codigo)}
                         onClick={() => navigate(`/producto/${producto.codigo}`)}
+                        style={{ cursor: 'pointer' }}
                       >
-                        <Card.Img
-                          variant="top"
-                          src={`http://localhost:8082/api/v1/archivos/${producto.archivoImagenId}`}
-                          alt={producto.nombre}
-                          style={{ height: '200px', objectFit: 'cover' }}
-                        />
+                        {/* AQUÍ ESTÁ LA CORRECCIÓN:
+                           Usamos imagenBase64 directamente. Si no existe, usamos placeholder.
+                        */}
+                        <div style={{ height: '200px', overflow: 'hidden' }}>
+                            <Card.Img
+                              variant="top"
+                              src={producto.imagenBase64 || "https://via.placeholder.com/300x200?text=Sin+Imagen"}
+                              alt={producto.nombre}
+                              style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                            />
+                        </div>
+
                         <Card.Body>
                           <Card.Title>{producto.nombre}</Card.Title>
-                          <Card.Text>{producto.descripcion}</Card.Text>
-                          <Button
-                            className="btn-choco"
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              addToCart(producto, 1);
-                            }}
-                          >
-                            Agregar al carrito
-                          </Button>
+                          <Card.Text>
+                              {producto.descripcion 
+                                ? (producto.descripcion.length > 80 ? producto.descripcion.substring(0, 80) + '...' : producto.descripcion)
+                                : 'Sin descripción'}
+                          </Card.Text>
+                          <div className="mt-auto">
+                              <Button
+                                className="btn-choco w-100"
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  addToCart(producto, 1);
+                                }}
+                              >
+                                Agregar al carrito
+                              </Button>
+                          </div>
                         </Card.Body>
                       </Card>
                     </Col>

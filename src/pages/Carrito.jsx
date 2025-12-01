@@ -1,4 +1,3 @@
-// src/pages/Carrito.jsx
 import React, { useMemo, useState, useEffect } from 'react';
 import { useCart } from '../context/CartContext';
 import { Link } from 'react-router-dom';
@@ -15,19 +14,17 @@ export default function Carrito() {
   const { currentUser } = useAuth();
 
   const [cuponMsg, setCuponMsg] = useState('');
-  // Local input para el cupón: no actualiza el contexto hasta presionar "Aplicar"
   const [cuponInput, setCuponInput] = useState(cupon || '');
   const [mensajeOk, setMensajeOk] = useState('');
   const [errores, setErrores] = useState([]);
 
   const pricing = useMemo(() => getPricing({ allowCupon: !!currentUser }), [getPricing, currentUser]);
 
-  // Si el usuario no está logueado y hay un cupón escrito, opcional: mantener pero avisar
   useEffect(() => {
     if (!currentUser && cupon) {
       setCuponMsg('Los cupones requieren iniciar sesión. Puedes seguir como invitado sin descuento.');
     }
-  }, [currentUser]);
+  }, [currentUser, cupon]);
 
   const onApplyCupon = () => {
     if (!currentUser) {
@@ -39,13 +36,11 @@ export default function Carrito() {
       setCuponMsg('Ingresa un código de cupón.');
       return;
     }
-    // Validación rápida en cliente antes de aplicar
     const ok = /^(SABOR10|PASTEL15|DUOC20)$/i.test(code);
     if (ok) {
       applyCupon(code);
       setCuponMsg('✅ Cupón aplicado con éxito.');
     } else {
-      // No aplicamos el cupón inválido al contexto
       setCuponMsg('❌ Cupón inválido o expirado.');
     }
   };
@@ -55,7 +50,6 @@ export default function Carrito() {
     setErrores(errs);
     setMensajeOk('');
     if (errs.length === 0) {
-      // Navegar al checkout para completar pago/envío
       navigate('/checkout');
     }
   };
@@ -81,15 +75,20 @@ export default function Carrito() {
                 {items.map(it => (
                   <div className="d-flex gap-3 align-items-center py-2 border-bottom" key={it.codigo}>
                     <div className="ratio ratio-1x1" style={{ width: 72 }}>
+                      {/* CORRECCIÓN DE IMAGEN AQUÍ */}
                       <img
-                        src={it.imagen}
+                        src={it.imagenBase64 || "https://via.placeholder.com/100?text=Sin+Imagen"}
                         alt={it.nombre}
                         className="rounded"
                         style={{ objectFit: 'cover' }}
                       />
                     </div>
                     <div className="flex-grow-1">
-                      <div className="fw-semibold">{it.nombre}</div>
+                      <div className="fw-semibold">
+                         <Link to={`/producto/${it.codigo}`} className="text-decoration-none text-dark">
+                           {it.nombre}
+                         </Link>
+                      </div>
                       <div className="text-muted small">{fmtCLP(it.precio)}</div>
                       {Number.isFinite(it.stock) && (
                         <div className="small text-muted">Stock: {it.stock}</div>
@@ -151,10 +150,7 @@ export default function Carrito() {
               />
               <button
                 className="btn btn-outline-choco"
-                onClick={() => {
-                  // Al presionar Aplicar pasamos el valor al contexto mediante applyCupon
-                  onApplyCupon();
-                }}
+                onClick={onApplyCupon}
                 disabled={!currentUser}
               >Aplicar</button>
             </div>

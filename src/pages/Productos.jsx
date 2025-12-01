@@ -1,104 +1,90 @@
-import React, { useState, useEffect } from 'react';
-import { useParams, Link } from 'react-router-dom';
-import SectionHeader from '../components/SectionHeader';
-import { useCart } from '../context/CartContext';
+import React, { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
 import { obtenerProductos } from '../services/productosService';
-import './Home.css';
 
-export default function Producto() {
-  const { code } = useParams();
-  const { addToCart, items } = useCart();
-
-  const [producto, setProducto] = useState(null);
+export default function Productos() {
+  const [productos, setProductos] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
-  // Estados para personalización
-  const [base, setBase] = useState('biscocho');
-  const [sabor, setSabor] = useState('chocolate');
-  const [personas, setPersonas] = useState(10);
-
-  const PERSONAL_PRICES = {
-    10: 15990,
-    15: 20990,
-    20: 25990,
-  };
-
-  // 🔥 CARGAR PRODUCTOS DESDE EL BACKEND
   useEffect(() => {
-    obtenerProductos().then(data => {
-      const encontrado = data.find(p => p.codigo === code);
-      setProducto(encontrado || null);
+    cargarProductos();
+  }, []);
+
+  async function cargarProductos() {
+    try {
+      const data = await obtenerProductos();
+      setProductos(data);
+    } catch (err) {
+      console.error("Error al cargar productos:", err);
+      setError("Hubo un problema cargando el catálogo.");
+    } finally {
       setLoading(false);
-    });
-  }, [code]);
-
-  if (loading) {
-    return <p className="container py-4">Cargando producto...</p>;
+    }
   }
 
-  if (!producto) {
-    return (
-      <main className="container py-4">
-        <div className="alert alert-warning">
-          Producto no encontrado. <Link to="/productos" className="alert-link">Volver al listado</Link>.
-        </div>
-      </main>
-    );
-  }
+  if (loading) return (
+    <div className="container py-5 text-center">
+      <div className="spinner-border text-primary" role="status">
+        <span className="visually-hidden">Cargando...</span>
+      </div>
+    </div>
+  );
 
-  const current = items.find(i => i.codigo === producto.codigo)?.qty || 0;
-  const atLimit = Number.isFinite(producto.stock) && current >= producto.stock;
+  if (error) return (
+    <div className="container py-5 text-center text-danger">
+      <h3>⚠️ {error}</h3>
+    </div>
+  );
 
   return (
-    <>
-      <SectionHeader
-        title={producto.nombre}
-        subtitle="Detalle del producto seleccionado."
-      />
-
-      <main className="container py-4">
-        <div className="row g-4">
-          <div className="col-12 col-md-6">
-            <div className="ratio ratio-4x3 bg-light rounded shadow-sm d-flex align-items-center justify-content-center">
-              {producto.archivoImagenId ? (
-                <img
-                  src={`http://localhost:8082/api/v1/archivos/${producto.archivoImagenId}`}
-                  alt={producto.nombre}
-                  className="img-fluid rounded"
-                  style={{ maxHeight: '100%', maxWidth: '100%', objectFit: 'cover' }}
-                />
-              ) : (
-                <span className="text-muted">Sin imagen</span>
-              )}
-            </div>
-          </div>
-
-          <div className="col-12 col-md-6">
-            <h2 className="mb-1">{producto.nombre}</h2>
-            <p className="text-muted">{producto.categoria}</p>
-            <p>{producto.descripcion}</p>
-            <p><strong>Stock:</strong> {Number.isFinite(producto.stock) ? producto.stock : '—'} unidades</p>
-
-            <div className="d-flex align-items-center gap-3">
-              <strong className="fs-4 text-choco">
-                ${producto.precio.toLocaleString('es-CL')}
-              </strong>
-
-              <button
-                className="btn btn-choco"
-                onClick={() => addToCart(producto, 1)}
-                disabled={atLimit}
-              >
-                {atLimit ? 'Sin stock' : 'Añadir al carrito'}
-              </button>
-            </div>
-
-            <div className="mt-3">
-              <Link to="/productos" className="btn btn-outline-choco">Volver</Link>
-            </div>
-          </div>
+    <div className="container py-5">
+      <h2 className="text-center mb-4 display-5 fw-bold" style={{ color: '#d63384' }}>
+        Nuestros Sabores
+      </h2>
+      
+      {productos.length === 0 ? (
+        <div className="alert alert-info text-center">
+          No hay productos disponibles en este momento. ¡Vuelve pronto!
         </div>
-      </main>
-    </>
+      ) : (
+        <div className="row row-cols-1 row-cols-md-3 g-4">
+          {productos.map((p) => (
+            <div className="col" key={p.id}>
+              <div className="card h-100 shadow-sm border-0">
+                {/* Contenedor de Imagen */}
+                <div style={{ height: '250px', overflow: 'hidden', backgroundColor: '#f8f9fa' }}>
+                    <img 
+                      // LÓGICA DE IMAGEN: Usamos directamente el string Base64.
+                      // Si viene vacío o null, usamos un placeholder.
+                      src={p.imagenBase64 || "https://via.placeholder.com/300x200?text=Sin+Imagen"} 
+                      className="card-img-top w-100 h-100" 
+                      style={{ objectFit: 'cover' }}
+                      alt={p.nombre} 
+                    />
+                </div>
+                
+                <div className="card-body d-flex flex-column">
+                  <h5 className="card-title fw-bold">{p.nombre}</h5>
+                  <p className="card-text text-muted small flex-grow-1">
+                    {p.descripcion ? p.descripcion.substring(0, 80) + '...' : 'Sin descripción'}
+                  </p>
+                  
+                  <div className="d-flex justify-content-between align-items-center mt-3">
+                    <span className="fs-5 fw-bold text-primary">
+                      ${p.precio?.toLocaleString('es-CL') || '0'}
+                    </span>
+                    {/* Enlace al detalle usando el código del producto */}
+                    <Link to={`/producto/${p.codigo}`} className="btn btn-outline-dark btn-sm rounded-pill px-3">
+                      Ver Detalle
+                    </Link>
+                  </div>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
   );
 }

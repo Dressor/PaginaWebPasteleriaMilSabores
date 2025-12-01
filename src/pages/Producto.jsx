@@ -1,200 +1,99 @@
-import React, { useState, useEffect } from "react";
-import { useParams, Link } from "react-router-dom";
-import SectionHeader from "../components/SectionHeader";
-import { useCart } from "../context/CartContext";
-import { obtenerProductoPorCodigo } from "../services/productosService";
-import "./Home.css";
+import React, { useEffect, useState } from 'react';
+import { useParams, Link } from 'react-router-dom';
+import { obtenerProductoPorCodigo } from '../services/productosService';
+import { Container, Row, Col, Card, Button, Badge } from 'react-bootstrap';
+import { useCart } from '../context/CartContext';
 
 export default function Producto() {
-  const { code } = useParams();
-  const { addToCart, items } = useCart();
+  const { code } = useParams(); // Captura el código de la URL (ej: PA001)
+  const { addToCart } = useCart();
   const [producto, setProducto] = useState(null);
   const [loading, setLoading] = useState(true);
-
-  // Personalización
-  const [base, setBase] = useState("biscocho");
-  const [sabor, setSabor] = useState("chocolate");
-  const [personas, setPersonas] = useState(10);
-
-  const PERSONAL_PRICES = {
-    10: 15990,
-    15: 20990,
-    20: 25990,
-  };
+  const [error, setError] = useState(null);
 
   useEffect(() => {
+    setLoading(true);
+    // Usamos la función que busca "manualmente" en la lista para evitar errores 400
     obtenerProductoPorCodigo(code)
-      .then((data) => {
-        setProducto(data);
-        setLoading(false);
+      .then(data => {
+        if (data) {
+          setProducto(data);
+          document.title = `${data.nombre} | Pastelería 1000 Sabores`;
+        } else {
+          setError('Producto no encontrado');
+        }
       })
-      .catch(() => {
-        setProducto(null);
+      .catch(err => {
+        console.error(err);
+        setError('Error al cargar el producto');
+      })
+      .finally(() => {
         setLoading(false);
       });
   }, [code]);
 
-  if (loading) {
-    return <div className="container py-4">Cargando...</div>;
-  }
+  if (loading) return (
+    <Container className="py-5 text-center">
+      <div className="spinner-border text-primary" role="status">
+        <span className="visually-hidden">Cargando...</span>
+      </div>
+    </Container>
+  );
 
-  if (!producto) {
-    return (
-      <main className="container py-4">
-        <div className="alert alert-warning">
-          Producto no encontrado.{" "}
-          <Link to="/productos" className="alert-link">
-            Volver al listado
-          </Link>
-          .
-        </div>
-      </main>
-    );
-  }
-
-  const current = items.find((i) => i.codigo === producto.codigo)?.qty || 0;
-  const atLimit =
-    Number.isFinite(producto.stock) && current >= producto.stock;
+  if (error || !producto) return (
+    <Container className="py-5 text-center">
+      <h3>⚠️ {error || "Producto no encontrado"}</h3>
+      <Link to="/productos" className="btn btn-primary mt-3">Volver al catálogo</Link>
+    </Container>
+  );
 
   return (
-    <>
-      <SectionHeader
-        title={producto.nombre}
-        subtitle="Detalle del producto seleccionado."
-      />
-
-      <main className="container py-4">
-        <div className="row g-4">
-          <div className="col-12 col-md-6">
-            <div className="ratio ratio-4x3 bg-light rounded shadow-sm d-flex align-items-center justify-content-center">
-              {producto.archivoImagenId ? (
-                <img
-                  src={`http://localhost:8082/api/v1/archivos/${producto.archivoImagenId}`}
-                  alt={producto.nombre}
-                  className="img-fluid rounded"
-                  style={{
-                    maxHeight: "100%",
-                    maxWidth: "100%",
-                    objectFit: "cover",
-                  }}
-                />
-              ) : (
-                <span className="text-muted">Sin imagen</span>
-              )}
-            </div>
-          </div>
-
-          <div className="col-12 col-md-6">
-            <h2 className="mb-1">{producto.nombre}</h2>
-            <p className="text-muted">{producto.categoria}</p>
-            <p>{producto.descripcion}</p>
-
-            <p>
-              <strong>Stock:</strong>{" "}
-              {Number.isFinite(producto.stock)
-                ? producto.stock
-                : "—"}{" "}
-              unidades
-            </p>
-
-            <div className="d-flex align-items-center gap-3">
-              <strong className="fs-4 text-choco">
-                $
-                {(
-                  producto.codigo === "personalizado"
-                    ? PERSONAL_PRICES[personas] || producto.precio
-                    : producto.precio
-                ).toLocaleString("es-CL")}
-              </strong>
-
-              <button
-                className="btn btn-choco"
-                onClick={() => addToCart(producto, 1)}
-                disabled={atLimit}
-              >
-                {atLimit ? "Sin stock" : "Añadir al carrito"}
-              </button>
-            </div>
-
-            {/* Personalización */}
-            {producto.codigo === "personalizado" ? (
-              <div className="mt-4">
-                <h5>Personaliza tu torta</h5>
-
-                <label className="form-label mt-2">Base</label>
-                <select
-                  className="form-select mb-2"
-                  value={base}
-                  onChange={(e) => setBase(e.target.value)}
-                >
-                  <option value="biscocho">Biscocho</option>
-                  <option value="hojarasca">Hojarasca</option>
-                  <option value="milhojas">Mil Hojas</option>
-                  <option value="mixta">Mixta</option>
-                </select>
-
-                <label className="form-label mt-2">Sabor</label>
-                <select
-                  className="form-select mb-2"
-                  value={sabor}
-                  onChange={(e) => setSabor(e.target.value)}
-                >
-                  <option value="chocolate">Chocolate</option>
-                  <option value="vainilla">Vainilla</option>
-                  <option value="zanahoria">Zanahoria</option>
-                  <option value="redvelvet">Red Velvet</option>
-                </select>
-
-                <label className="form-label mt-2">
-                  Cantidad de personas
-                </label>
-                <select
-                  className="form-select mb-3"
-                  value={personas}
-                  onChange={(e) => setPersonas(Number(e.target.value))}
-                >
-                  <option value={10}>10 personas — $15.990</option>
-                  <option value={15}>15 personas — $20.990</option>
-                  <option value={20}>20 personas — $25.990</option>
-                </select>
-
-                <div className="d-flex gap-2">
-                  <button
-                    className="btn btn-choco"
-                    onClick={() => {
-                      const uniqueCode = `${producto.codigo}-${Date.now()}`;
-
-                      const nuevo = {
-                        ...producto,
-                        codigo: uniqueCode,
-                        nombre: `${producto.nombre} (Personalizado)`,
-                        precio:
-                          PERSONAL_PRICES[personas] || producto.precio,
-                        personalizado: { base, sabor, personas },
-                      };
-
-                      addToCart(nuevo, 1);
-                    }}
-                    disabled={atLimit}
-                  >
-                    Añadir personalizado al carrito
-                  </button>
-
-                  <Link to="/productos" className="btn btn-outline-choco">
-                    Volver
-                  </Link>
+    <Container className="py-5">
+      <Link to="/productos" className="btn btn-outline-secondary mb-4">
+        &larr; Volver al catálogo
+      </Link>
+      
+      <Row>
+        <Col md={6} className="mb-4">
+            <Card className="border-0 shadow-sm overflow-hidden">
+                <div style={{ maxHeight: '500px', backgroundColor: '#f8f9fa' }}>
+                  {/* CORRECCIÓN: Usamos imagenBase64 directamente */}
+                  <img
+                    src={producto.imagenBase64 || "https://via.placeholder.com/600x400?text=Sin+Imagen"}
+                    alt={producto.nombre}
+                    className="img-fluid w-100 h-100"
+                    style={{ objectFit: 'contain' }} // contain para ver la foto completa, cover para llenar
+                  />
                 </div>
-              </div>
-            ) : (
-              <div className="mt-3">
-                <Link to="/productos" className="btn btn-outline-choco">
-                  Volver
-                </Link>
-              </div>
-            )}
+            </Card>
+        </Col>
+        
+        <Col md={6}>
+          <h1 className="display-5 fw-bold text-choco mb-2">{producto.nombre}</h1>
+          <p className="text-muted small mb-3">Código: {producto.codigo}</p>
+          
+          <div className="mb-4">
+            {producto.categoria && <Badge bg="secondary" className="me-2 fs-6">{producto.categoria}</Badge>}
+            <span className="h3 text-primary fw-bold">${Number(producto.precio).toLocaleString('es-CL')}</span>
           </div>
-        </div>
-      </main>
-    </>
+          
+          <h5 className="mb-3">Descripción</h5>
+          <p className="lead text-muted mb-5" style={{ fontSize: '1.1rem' }}>
+            {producto.descripcion || "Sin descripción disponible para este producto."}
+          </p>
+          
+          <div className="d-grid gap-2 col-lg-8 mx-auto mx-lg-0">
+            <Button 
+                variant="primary" 
+                size="lg" 
+                className="btn-choco py-3"
+                onClick={() => addToCart(producto, 1)}
+            >
+              <i className="bi bi-cart-plus me-2"></i> Agregar al Carrito
+            </Button>
+          </div>
+        </Col>
+      </Row>
+    </Container>
   );
 }
